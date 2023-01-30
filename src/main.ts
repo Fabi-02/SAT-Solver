@@ -1,3 +1,4 @@
+import './style.scss'
 import { invoke } from "@tauri-apps/api/tauri";
 
 let greetInputEl: HTMLInputElement | null;
