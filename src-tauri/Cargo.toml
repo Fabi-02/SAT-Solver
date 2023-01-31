@@ -1,5 +1,5 @@
 [package]
-name = "SAT-Solver"
+name = "sat-solver"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]
