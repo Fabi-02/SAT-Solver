@@ -24,7 +24,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '~bootstrap': '/node_modules/bootstrap',
       '~assets': '/src/assets',
       '~scss': '/src/scss',
       '~ts': '/src/ts'
