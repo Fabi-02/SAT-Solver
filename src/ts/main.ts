@@ -2,18 +2,16 @@
 import * as d3 from "d3";
 
 var width: number = 800;
-var height: number = 532;
+var height: number = 600;
 
 var i: number = 0;
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("body").insert("svg")
     .attr("width", width)
     .attr("height", height)
+    .style("position", "absolute")
+    .style("top", "0px")
     .on("mousemove", particle);
-
-svg.append("rect")
-    .attr("width", width)
-    .attr("height", height)
 
 function particle(event: Event) {
     event.preventDefault();
