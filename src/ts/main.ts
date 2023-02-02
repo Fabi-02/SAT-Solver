@@ -11,19 +11,23 @@ var svg = d3.select("body").append("svg")
     .attr("height", height)
     .on("mousemove", particle);
 
+svg.append("rect")
+    .attr("width", width)
+    .attr("height", height)
+
 function particle(event: Event) {
     event.preventDefault();
     let mouse = d3.pointer(event);
     i = (i + 1) % 360
-    svg.insert("circle", "rect")
+    svg.insert("circle")
         .attr("cx", mouse[0])
         .attr("cy", mouse[1])
         .attr("r", 1e-6)
-        .style("fill", d3.hsl(i, 1, .5).toString())
-        .style("opacity", 1)
-        // .style("fill", "white")
-        // .style("stroke", d3.hsl(i, 1, .5).toString())
-        // .style("stroke-opacity", 1)
+        // .style("fill", d3.hsl(i, 1, .5).toString())
+        // .style("opacity", 1)
+        .style("fill", "transparent")
+        .style("stroke", d3.hsl(i, 1, .5).toString())
+        .style("stroke-width", 3)
         .transition()
         .duration(2000)
         .ease(Math.sqrt)
