@@ -1,14 +1,11 @@
 // import { invoke } from "@tauri-apps/api/tauri";
 import * as d3 from "d3";
 
-var width: number = 800;
-var height: number = 600;
-
 var i: number = 0;
 
 var svg = d3.select("body").insert("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", "100%")
+    .attr("height", "100%")
     .style("position", "absolute")
     .style("top", "0px")
     .on("mousemove", particle);
