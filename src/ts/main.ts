@@ -3,11 +3,9 @@ import * as d3 from "d3";
 
 var i: number = 0;
 
-var svg = d3.select("body").insert("svg")
+var svg = d3.select("#d3-content").insert("svg")
     .attr("width", "100%")
     .attr("height", "100%")
-    .style("position", "absolute")
-    .style("top", "0px")
     .on("mousemove", particle);
 
 function particle(event: Event) {
