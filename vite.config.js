@@ -1,8 +1,10 @@
 import { defineConfig } from "vite";
-import path from "path";
+import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [vue()],
+
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   // prevent vite from obscuring rust errors
   clearScreen: false,
@@ -16,17 +18,10 @@ export default defineConfig({
   envPrefix: ["VITE_", "TAURI_"],
   build: {
     // Tauri supports es2021
-    target: ["es2021", "chrome100", "safari13"],
+    target: process.env.TAURI_PLATFORM == "windows" ? "chrome105" : "safari13",
     // don't minify for debug builds
     minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
-  },
-  resolve: {
-    alias: {
-      '~assets': '/src/assets',
-      '~scss': '/src/scss',
-      '~ts': '/src/ts'
-    }
   }
 });
