@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .menu-tab {
+        @apply text-gray-300 hover:bg-gray-700 hover:text-white;
+    }
+
+    .active-menu-tab {
+        @apply bg-gray-900 text-white hover:bg-gray-700;
+    }
+}

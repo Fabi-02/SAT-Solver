@@ -1,31 +1,69 @@
 // import { invoke } from "@tauri-apps/api/tauri";
-import * as d3 from "d3";
+import $ from "jquery";
 
-var i: number = 0;
+type mobileMenuType = {
+    isOpen: boolean,
+    menu?: JQuery<HTMLElement>,
+    buttonOpen?: JQuery<HTMLElement>,
+    buttonClose?: JQuery<HTMLElement>
+};
 
-var svg = d3.select("#d3-content").insert("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .on("mousemove", particle);
+const mobileMenu: mobileMenuType = {
+    isOpen: false
+};
 
-function particle(event: Event) {
-    event.preventDefault();
-    let mouse = d3.pointer(event);
-    i = (i + 1) % 360
-    svg.insert("circle")
-        .attr("cx", mouse[0])
-        .attr("cy", mouse[1])
-        .attr("r", 1e-6)
-        // .style("fill", d3.hsl(i, 1, .5).toString())
-        // .style("opacity", 1)
-        .style("fill", "transparent")
-        .style("stroke", d3.hsl(i, 1, .5).toString())
-        .style("stroke-width", 3)
-        .transition()
-        .duration(2000)
-        .ease(Math.sqrt)
-        .attr("r", 100)
-        .style("opacity", 0)
-        // .style("stroke-opacity", 0)
-        .remove();
+function toggleMobileMenu() {
+    mobileMenu.isOpen = !mobileMenu.isOpen
+    if (mobileMenu.isOpen) {
+        mobileMenu.buttonOpen?.addClass("hidden");
+        mobileMenu.buttonOpen?.removeClass("block");
+        mobileMenu.buttonClose?.addClass("block");
+        mobileMenu.buttonClose?.removeClass("hidden");
+
+        mobileMenu.menu?.removeClass("hidden");
+    } else {
+        mobileMenu.buttonOpen?.addClass("block");
+        mobileMenu.buttonOpen?.removeClass("hidden");
+        mobileMenu.buttonClose?.addClass("hidden");
+        mobileMenu.buttonClose?.removeClass("block");
+        
+        mobileMenu.menu?.addClass("hidden");
     }
+}
+
+type tabsType = {
+    [key: string]: string
+}
+
+const tabs: tabsType = {
+    ".menu-tab1": "./src/html/tab1.html",
+    ".menu-tab2": "./src/html/tab2.html",
+    ".menu-tab3": "./src/html/tab3.html"
+}
+
+function changeTab(tab: string) {
+    $(".active-menu-tab").addClass("menu-tab")
+    $(".active-menu-tab").removeClass("active-menu-tab")
+    $(tab).addClass("active-menu-tab")
+    $(tab).removeClass("menu-tab")
+
+    let iframe = $("#content-frame")
+    let parent = iframe.parent()
+    iframe.attr("src", tabs[tab]).remove()
+    parent.append(iframe)
+}
+
+function initMenu() {
+    mobileMenu.menu = $("#mobile-menu");
+    mobileMenu.buttonOpen = $("#mobile-menu-button-open");
+    mobileMenu.buttonClose = $("#mobile-menu-button-close");
+    $("#mobile-menu-button")?.on("click", () => toggleMobileMenu());
+
+    for (let menuTab in tabs) {
+        $(menuTab)?.on("click", () => changeTab(menuTab));
+    }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    initMenu();
+});
