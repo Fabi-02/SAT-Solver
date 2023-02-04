@@ -4,14 +4,14 @@ import { onMounted } from "vue";
 
 var i: number = 0;
 onMounted(() => {
-    console.log("AAAAAA")
     var svg = d3.select("#d3-test").insert("svg")
         .attr("width", "100%")
         .attr("height", "100%")
         .on("mousemove", particle);
+
     function particle(event: Event) {
-        console.log("A")
         event.preventDefault();
+        
         let mouse = d3.pointer(event);
         i = (i + 1) % 360
         svg.insert("circle")

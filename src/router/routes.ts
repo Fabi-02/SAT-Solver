@@ -4,18 +4,23 @@ import StartPage from '../views/StartPage.vue'
 const routes = [
   {
     path: '/',
-    name: 'Start-Page',
+    name: 'Startseite',
     component: StartPage
   },
   {
-    path: '/test1',
-    name: 'Test1',
-    component: () => import('../views/Test1.vue')
+    path: '/solver',
+    name: 'SAT-Solver',
+    component: () => import('../views/Solver.vue')
   },
   {
-    path: '/test2',
-    name: 'Test2',
-    component: () => import('../views/Test2.vue')
+    path: '/n-queen',
+    name: 'N-Danem Problem',
+    component: () => import('../views/NQueen.vue')
+  },
+  {
+    path: '/sudoku',
+    name: 'Sudoku',
+    component: () => import('../views/Sudoku.vue')
   }
 ]
 

@@ -8,9 +8,10 @@ import MenuItem from './MenuItem.vue'
         <h1 class="font-bold text-xl px-3 py-2 text-white whitespace-nowrap">SAT-Solver</h1>
         <div class="ml-5 flex items-baseline space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <MenuItem to="/">Startseite</MenuItem>
-            <MenuItem to="/test1">Test1</MenuItem>
-            <MenuItem to="/test2">Test2</MenuItem>
+            <MenuItem to="/"><font-awesome-icon icon="fa-solid fa-house" /> Startseite</MenuItem>
+            <MenuItem to="/solver"><font-awesome-icon icon="fa-solid fa-gears" /> Solver</MenuItem>
+            <MenuItem to="/n-queen"><font-awesome-icon icon="fa-solid fa-chess-queen" /> N-Damen</MenuItem>
+            <MenuItem to="/sudoku"><font-awesome-icon icon="fa-solid fa-border-all" /> Sudoku</MenuItem>
         </div>
     </nav>
 </template>
