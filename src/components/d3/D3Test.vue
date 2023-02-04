@@ -36,7 +36,5 @@ onMounted(() => {
 
 
 <template>
-    <div class="h-full px-4 py-6 sm:px-0">
-        <div class="h-full rounded-lg border-4 border-dashed border-gray-200" id="d3-test"></div>
-    </div>
+    <div id="d3-test" class="h-full w-full"></div>
 </template>

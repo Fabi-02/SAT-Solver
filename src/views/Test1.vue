@@ -5,6 +5,8 @@ import D3Test from '../components/d3/D3Test.vue'
 
 <template>
     <ContentPage name="Test1">
-        <D3Test />
+        <div class="h-full rounded-lg border-4 border-dashed border-gray-200">
+            <D3Test />
+        </div>
     </ContentPage>
 </template>
