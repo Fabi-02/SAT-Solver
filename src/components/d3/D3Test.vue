@@ -1,7 +1,3 @@
-<template>
-    <div id="d3-test" class="absolute h-full w-full top-0"></div>
-</template>
-
 <script setup lang="ts">
 import * as d3 from "d3"
 import { onMounted } from "vue";
@@ -9,11 +5,12 @@ import { onMounted } from "vue";
 var i: number = 0;
 onMounted(() => {
     console.log("AAAAAA")
-    var svg = d3.select("#d3-test").append("svg")
+    var svg = d3.select("#d3-test").insert("svg")
         .attr("width", "100%")
         .attr("height", "100%")
         .on("mousemove", particle);
     function particle(event: Event) {
+        console.log("A")
         event.preventDefault();
         let mouse = d3.pointer(event);
         i = (i + 1) % 360
@@ -35,5 +32,11 @@ onMounted(() => {
             .remove();
     }
 });
-
 </script>
+
+
+<template>
+    <div class="h-full px-4 py-6 sm:px-0">
+        <div class="h-full rounded-lg border-4 border-dashed border-gray-200" id="d3-test"></div>
+    </div>
+</template>
