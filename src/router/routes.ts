@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import StartPage from '../views/StartPage.vue'
+import StartPage from '@views/StartPage.vue'
 
 const routes = [
   {
@@ -10,17 +10,17 @@ const routes = [
   {
     path: '/solver',
     name: 'SAT-Solver',
-    component: () => import('../views/Solver.vue')
+    component: () => import('@views/Solver.vue')
   },
   {
     path: '/n-queen',
     name: 'N-Danem Problem',
-    component: () => import('../views/NQueen.vue')
+    component: () => import('@views/NQueen.vue')
   },
   {
     path: '/sudoku',
     name: 'Sudoku',
-    component: () => import('../views/Sudoku.vue')
+    component: () => import('@views/Sudoku.vue')
   }
 ]
 

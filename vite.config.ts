@@ -23,5 +23,14 @@ export default defineConfig({
     minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
+      '@components': '/src/components',
+      '@views': '/src/views',
+      '@assets': '/src/assets',
+      '@routes': '/src/router/routes',
+    }
   }
 });

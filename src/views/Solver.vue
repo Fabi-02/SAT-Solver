@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ContentPage from '../components/ContentPage.vue'
-import FormulaInput from '../components/FormulaInput.vue'
-// import D3Test from '../components/d3/D3Test.vue'
+import ContentPage from '@components/ContentPage.vue'
+import FormulaInput from '@components/FormulaInput.vue'
+// import D3Test from '@components/d3/D3Test.vue'
 </script>
 
 <template>
