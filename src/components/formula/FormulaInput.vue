@@ -14,7 +14,10 @@ function updateFormula(formulaString: string) {
 
 <template>
     <div class="flex flex-col">
-        <button class="border ml-5 my-3" @click="modernInput = !modernInput">{{ modernInput ? "Modern" : "Textfeld" }}</button>
+        <button class="border ml-5 my-3 w-10 bg-gray-100 hover:bg-gray-50 rounded-full" @click="modernInput = !modernInput">
+            <font-awesome-icon icon="fa-solid fa-bars" v-if="modernInput" />
+            <font-awesome-icon icon="fa-regular fa-square" v-else />
+        </button>
         <ModernInput :formula="formularString" @update:formula="updateFormula" v-if="modernInput"/>
         <TextFieldInput :formula="formularString" @update:formula="updateFormula" v-else/>
     </div>

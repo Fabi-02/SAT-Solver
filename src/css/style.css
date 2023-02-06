@@ -10,4 +10,8 @@
     .active-menu-tab {
         @apply bg-gray-900 text-white hover:bg-gray-700;
     }
+
+    .text-input {
+        @apply bg-gray-100 text-gray-700 border border-gray-200 rounded focus:outline-none focus:bg-white hover:bg-gray-50;
+    }
 }
