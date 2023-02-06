@@ -8,7 +8,7 @@ const props = defineProps({
     <div class="h-full flex flex-col">
         <header class="bg-white shadow">
             <div class="py-6 px-6">
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ name }}</h1>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900">{{ name }}</h1>
             </div>
         </header>
         <main class="flex-grow w-full">
