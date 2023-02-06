@@ -7,7 +7,7 @@ import MenuBar from './components/menubar/MenuBar.vue'
 
 <template>
     <div id="root" class="h-full flex flex-col">
-        <MenuBar />
-        <RouterView class="flex-grow w-full" />
+        <MenuBar class="fixed h-14"/>
+        <RouterView class="mt-14" />
     </div>
 </template>
