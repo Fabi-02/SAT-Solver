@@ -20,7 +20,7 @@ const rows = computed(() => {
 </script>
 
 <template>
-    <div class="flex-grow h-0">
+    <div class="flex-grow h-0 ml-5">
         <textarea class="w-full border p-2 resize-none leading-5 whitespace-nowrap max-h-full" :rows="rows" :value="formula" @input="input"></textarea>
     </div>
 </template>

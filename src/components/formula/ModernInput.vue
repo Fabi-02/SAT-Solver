@@ -192,11 +192,11 @@ function update() {
             <span class="w-5 mb-1" v-if="index !== 0">∧</span>
             <span class="w-5" v-else></span>
             <input type="text" :name="'formula-' + index" autocomplete="off"
-                   class="block overflow-ellipsis w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-1 leading-tight focus:outline-none focus:bg-white"
-                   :class="{ 'bg-red-100 border-red-600 border-2': !item.valid }" v-model="item.text"
-                   @focusin="focusInput(index, true)"
-                   @input="input(index)" @keydown="keyDown($event, index)"
-                   @focusout="focusInput(index, false)" ref="refs" />
+                class="block overflow-ellipsis w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-1 leading-tight focus:outline-none focus:bg-white"
+                :class="{ 'bg-red-100 border-red-600 border-2': !item.valid }" v-model="item.text"
+                @focusin="focusInput(index, true)"
+                @input="input(index)" @keydown="keyDown($event, index)"
+                @focusout="focusInput(index, false)" ref="refs" />
         </div>
     </div>
 </template>
