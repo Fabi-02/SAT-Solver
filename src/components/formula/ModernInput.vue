@@ -187,7 +187,7 @@ function update() {
 </script>
 
 <template>
-    <div>
+    <div class="flex-grow h-0 overflow-y-auto">
         <div class="flex items-center" v-for="(item, index) in formulas">
             <span class="w-5 mb-1" v-if="index !== 0">∧</span>
             <span class="w-5" v-else></span>

@@ -9,6 +9,6 @@ import FormulaInput from '@components/formula/FormulaInput.vue'
         <!-- <div class="h-full rounded-lg border-4 border-dashed border-gray-200">
             <D3Test />
         </div> -->
-        <FormulaInput class="w-80"/>
+        <FormulaInput class="w-80 h-full"/>
     </ContentPage>
 </template>
