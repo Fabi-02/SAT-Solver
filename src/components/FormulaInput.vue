@@ -1,28 +1,36 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, reactive, nextTick, computed } from 'vue'
 
-const formulas = ref([{ text: '', raw: '' }])
 const refs = ref<HTMLInputElement[]>([])
 
-function formatString(str: string): string {
-    return str.trim()
-            .replaceAll(/\s\s+/g, ' ')
-            .replaceAll(/-/g, '¬')
-            .replaceAll(/\s/g, ' ∨ ');
+const formulas = reactive([{ text: '', raw: '', valid: false }])
+
+function validateFormula(formula: string): boolean {
+    console.log("Validate: " + formula);
+    return /^ *(-?[a-zA-Z0-9_]+)( +-?[a-zA-Z0-9_]+)* *$/.test(formula);
+}
+
+function formatFormula(formula: string): string {
+    return formula.trim()
+        .replaceAll(/\s\s+/g, ' ')
+        .replaceAll(/-/g, '¬')
+        .replaceAll(/\s/g, ' ∨ ');
 }
 
 function focusInput(index: number, focus: boolean) {
-    if (index >= formulas.value.length) return;
-    let formula = formulas.value[index];
+    if (index >= formulas.length) return;
+    let formula = formulas[index];
     if (focus) {
         formula.text = formula.raw;
     } else {
         formula.raw = formula.text;
-        formula.text = formatString(formula.text)
+        if (validateFormula(formula.raw)) {
+            formula.text = formatFormula(formula.text)
+        }
     }
 }
 
-async function keyDown(event: KeyboardEvent, index:number) {
+async function keyDown(event: KeyboardEvent, index: number) {
     let key = event.key;
 
     if (!/[a-zA-Z0-9_\- ]/.test(key) && !["Backspace", "Enter", "Delete", "ArrowUp", "ArrowDown"].includes(key)) {
@@ -30,15 +38,15 @@ async function keyDown(event: KeyboardEvent, index:number) {
         event.key
         return;
     }
-    
+
     let selStart = refs.value[index].selectionStart;
     let selEnd = refs.value[index].selectionEnd;
     if (selStart === null || selEnd === null) return;
-    
-    let formula = formulas.value[index];
+
+    let formula = formulas[index];
     let focus: number | null = null;
     let cursorPos: number | null = null;
-    
+
     if (event.ctrlKey && (key === 'v' || key === 'V')) {
         event.preventDefault();
         let clipboard = await navigator.clipboard.readText();
@@ -56,47 +64,53 @@ async function keyDown(event: KeyboardEvent, index:number) {
                 line += endString;
             }
             nextFormula.raw = line;
+            nextFormula.valid = validateFormula(nextFormula.raw);
             cursorPos = nextFormula.raw.length - endString.length;
             if (i !== 0) {
-                nextFormula.text = formatString(nextFormula.raw);
-                formulas.value.splice(index + i, 0, nextFormula);
+                nextFormula.text = nextFormula.valid ? formatFormula(nextFormula.raw) : nextFormula.raw;
+                formulas.splice(index + i, 0, nextFormula);
                 focus = index + i;
             } else {
                 nextFormula.text = nextFormula.raw;
             }
-            nextFormula = { text: '', raw: '' };
+            nextFormula = { text: '', raw: '', valid: false };
         }
     } else if (key === "Enter") {
         let currentString = formula.text.slice(0, selStart)
         let nextString = formula.text.slice(selEnd, formula.text.length)
         formula.text = currentString;
-        formulas.value.splice(index + 1, 0, { text: '', raw: nextString })
+        formula.raw = formula.text;
+        formula.valid = validateFormula(formula.raw)
+        formulas.splice(index + 1, 0, { text: '', raw: nextString, valid: validateFormula(nextString) })
         focus = index + 1;
         cursorPos = 0;
-        
+
     } else if (key === "Backspace") {
-        if (selStart == 0 && selEnd == 0 && formulas.value.length > 1) {
+        if (selStart == 0 && selEnd == 0 && formulas.length > 1) {
             event.preventDefault();
             if (index > 0) {
-                let formula = formulas.value[index];
-                let prevFormula = formulas.value[index - 1];
+                let formula = formulas[index];
+                let prevFormula = formulas[index - 1];
                 cursorPos = prevFormula.raw.length;
                 prevFormula.raw += formula.text;
+                prevFormula.valid = validateFormula(prevFormula.raw);
             }
-            formulas.value.splice(index, 1);
+            formulas.splice(index, 1);
             focusInput(index, true);  // Da ein Element gelöscht wird, wird focusInput mit false auf dem "falschen" Element ausgeführt
             if (index > 0) {
                 focus = index - 1;
             }
         }
     } else if (key === "Delete") {
-        if (selStart == formula.text.length && selEnd == formula.text.length && index < formulas.value.length - 1 && formulas.value.length > 1) {
+        if (selStart == formula.text.length && selEnd == formula.text.length && index < formulas.length - 1 && formulas.length > 1) {
             event.preventDefault();
             cursorPos = formula.text.length;
 
-            let nextFormula = formulas.value[index + 1];
+            let nextFormula = formulas[index + 1];
             formula.text += nextFormula.raw;
-            formulas.value.splice(index + 1, 1);
+            formula.raw = formula.text
+            formula.valid = validateFormula(formula.raw)
+            formulas.splice(index + 1, 1);
         }
     } else if (key === "ArrowUp") {
         event.preventDefault();
@@ -106,7 +120,7 @@ async function keyDown(event: KeyboardEvent, index:number) {
         }
     } else if (key === "ArrowDown") {
         event.preventDefault();
-        if (index < formulas.value.length - 1) {
+        if (index < formulas.length - 1) {
             focus = index + 1;
             cursorPos = selStart
         }
@@ -133,13 +147,15 @@ async function keyDown(event: KeyboardEvent, index:number) {
 
 <template>
     <div>
-        <div class="flex items-center" v-for="(item, index) in formulas" >
+        <div class="flex items-center" v-for="(item, index) in formulas">
             <span class="w-5 mb-1" v-if="index !== 0">∧</span>
             <span class="w-5" v-else></span>
             <input type="text" :name="'formula-' + index"
-                class="block overflow-ellipsis w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-1 leading-tight focus:outline-none focus:bg-white"
-                v-model="item.text" @focusin="focusInput(index, true)" @focusout="focusInput(index, false)"
-                @keydown="keyDown($event, index)" ref="refs"/>
+                   class="block overflow-ellipsis w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-1 leading-tight focus:outline-none focus:bg-white"
+                   :class="{ 'bg-red-100 border-red-600 border-2': !item.valid }" v-model="item.text"
+                   @focusin="focusInput(index, true)"
+                   @input="item.valid = validateFormula(item.text)" @keydown="keyDown($event, index)"
+                   @focusout="focusInput(index, false)" ref="refs" />
         </div>
     </div>
 </template>
