@@ -132,9 +132,14 @@ async function keyDown(event: KeyboardEvent, index:number) {
 </script>
 
 <template>
-    <input type="text" :name="'formula-' + index"
-        class="block w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-        v-model="item.text" @focusin="focusInput(index, true)" @focusout="focusInput(index, false)"
-        @keydown="keyDown($event, index)" ref="refs"
-        v-for="(item, index) in formulas" />
+    <div>
+        <div class="flex items-center" v-for="(item, index) in formulas" >
+            <span class="w-5 mb-1" v-if="index !== 0">∧</span>
+            <span class="w-5" v-else></span>
+            <input type="text" :name="'formula-' + index"
+                class="block overflow-ellipsis w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-1 px-4 mb-1 leading-tight focus:outline-none focus:bg-white"
+                v-model="item.text" @focusin="focusInput(index, true)" @focusout="focusInput(index, false)"
+                @keydown="keyDown($event, index)" ref="refs"/>
+        </div>
+    </div>
 </template>
