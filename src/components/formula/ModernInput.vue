@@ -180,7 +180,6 @@ function update() {
         formulaStr += formula.raw + '\n';
     }
     formulaStr = formulaStr.slice(0, formulaStr.length -1);
-    console.log("update");
 
     emit("update:formula", formulaStr);
 }

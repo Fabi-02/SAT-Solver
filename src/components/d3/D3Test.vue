@@ -1,63 +1,51 @@
 <script setup lang="ts">
 import * as d3 from "d3"
+import { TreeNode } from "./types";
 import { onMounted } from "vue";
+import { HierarchyPointLink, HierarchyPointNode, Link, ValueFn } from "d3";
 
-const data = {
-    data: {
-        id: 0
-    },
-    children: [
-        {
-            data: {
-                id: 0
-            },
-            children: [
-                {
-                    data: {
-                        id: 0
-                    }
-                },
-                {
-                    data: {
-                        id: 0
-                    },
-                    children: [
-                    {
-                        data: {
-                            id: 0
-                        }
-                    },
-                    {
-                        data: {
-                            id: 0
-                        }
-                    }
-                ]
-                }
-            ]
-        },
-        {
-            data: {
-                id: 0
-            }
-        }
-    ]
+var id = 0;
+
+const data: TreeNode = {
+    id: id,
+    children: []
 }
+
+addChilds(data, 3);
+
+function addChilds(node: TreeNode, depth: number) {
+    if (depth <= 0) return;
+    let child1 = {
+        id: ++id,
+        children: []
+    };
+    let child2 = {
+        id: ++id,
+        children: []
+    };
+    addChilds(child1, depth - 1);
+    addChilds(child2, depth - 1);
+    node.children?.push(child1, child2);
+}
+
+type TreeLayoutNode = HierarchyPointNode<TreeNode>;
 
 onMounted(() => {
 
-    const width = 400;
-    const height = 400;
+    const width = 500;
+    const height = 500;
 
     const svg = d3.select("#d3-test").insert("svg")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("height", "100%")
+        .attr("width", "100%")
+        .attr("preserveAspectRatio", "none")
+        .attr("viewBox", `0 0 ${width} ${height}`);
+    
+    const tree = d3.tree<TreeNode>().size([width, height]);
 
-    const treeLayout = d3.tree().nodeSize([height / 5, width / 5]);
-
-    const root: any = d3.hierarchy(data);
-    const links = treeLayout(root).links();
-    const linkPathGen: any = d3.linkVertical().x(d => (d as any).x + width / 2).y(d => (d as any).y);
+    const root = d3.hierarchy<TreeNode>(data);
+    const links = tree(root).links();
+    const linkPathGen: any = d3.linkVertical<TreeLayoutNode, TreeLayoutNode>().x(d => d.x).y(d => d.y);
 
     svg.selectAll('path').data(links).enter()
         .append('path').attr('d', linkPathGen).attr('class', 'tree-link');
@@ -66,7 +54,7 @@ onMounted(() => {
 
 
 <template>
-    <div id="d3-test" class="h-full w-full"></div>
+    <div id="d3-test"></div>
 </template>
 
 
