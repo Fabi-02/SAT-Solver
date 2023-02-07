@@ -8,6 +8,6 @@ import MenuBar from '@components/menubar/MenuBar.vue'
 <template>
     <div id="root" class="h-screen flex flex-col">
         <MenuBar class="fixed h-14"/>
-        <RouterView class="mt-14" />
+        <RouterView class="mt-14 overflow-auto" />
     </div>
 </template>
