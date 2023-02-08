@@ -50,10 +50,18 @@ onMounted(() => {
         .attr("height", "100%")
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
-        .attr("viewBox", `0 0 ${width} ${height}`);
+        .attr("viewBox", `0 0 ${width} ${height}`)
 
-    linkGroup = svg.insert("g").attr("class", "tree-links");
-    nodeGroup = svg.insert("g").attr("class", "tree-nodes");
+    const group = svg.insert("g")
+        .attr("class", "tree")
+
+    svg.call(d3.zoom().on("zoom", function (e) {
+        group.attr("transform", e.transform)
+    }) as any);
+
+
+    linkGroup = group.insert("g").attr("class", "tree-links");
+    nodeGroup = group.insert("g").attr("class", "tree-nodes");
 
     update();
 });
@@ -82,7 +90,7 @@ function update() {
     linkSelection?.join(
         enter => {
             let linkEnter = enter.append("path").attr("class", "tree-link");
-                
+
             linkEnter.attr("d", linkPathGen as any)
                 .attr("opacity", 0)
                 .transition()
@@ -92,18 +100,18 @@ function update() {
 
             return linkEnter;
         },
-        update => 
+        update =>
             update.transition()
-            .duration(animationDuration / 2)
-            .attr("d", linkPathGen as any)
-            .attr("opacity", 1)
+                .duration(animationDuration / 2)
+                .attr("d", linkPathGen as any)
+                .attr("opacity", 1)
     )
 
     let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData);
     nodesSelection?.join(
         enter => {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
-            
+
             nodeEnter.append("circle")
                 .attr("r", 10)
                 .attr("fill", "#666");
@@ -130,7 +138,7 @@ function update() {
                 .attr("opacity", 1);
 
             nodeUpdate.select("text").text(d => `${d.data.id}`)
-            
+
             return nodeUpdate;
         }
     )
