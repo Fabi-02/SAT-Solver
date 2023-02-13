@@ -3,12 +3,18 @@ import ModernInput from "@components/formula/ModernInput.vue"
 import TextFieldInput from "@components/formula/TextFieldInput.vue"
 import { ref } from "vue";
 
-const formularString = ref("a b\nc -d\ne f")
+const props = defineProps({
+    formula: { type: String, required: true }
+});
+
+const emit = defineEmits<{
+    (e: 'update:formula', value: string): void
+}>();
 
 const modernInput = ref(true)
 
 function updateFormula(formulaString: string) {
-    formularString.value = formulaString;
+    emit("update:formula", formulaString);
 }
 </script>
 
@@ -18,7 +24,7 @@ function updateFormula(formulaString: string) {
             <font-awesome-icon icon="fa-solid fa-align-justify" v-if="modernInput" />
             <font-awesome-icon icon="fa-regular fa-square" v-else />
         </button>
-        <ModernInput :formula="formularString" @update:formula="updateFormula" v-if="modernInput"/>
-        <TextFieldInput :formula="formularString" @update:formula="updateFormula" v-else/>
+        <ModernInput :formula="formula" @update:formula="updateFormula" v-if="modernInput"/>
+        <TextFieldInput :formula="formula" @update:formula="updateFormula" v-else/>
     </div>
 </template>

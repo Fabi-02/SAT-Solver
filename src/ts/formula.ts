@@ -3,7 +3,10 @@ export class CNF {
 
     constructor(text: string) {
         this.formulas = []
-        for (let line of text.split("\n")) {
+        let lines = text.trim()
+            .replaceAll(/\s\s+/g, " ")
+            .split(/\r\n|\n/);
+        for (let line of lines) {
             this.formulas.push(new Formula(line));
         }
     }
@@ -14,9 +17,7 @@ export class Formula {
 
     constructor(text: string) {
         this.variables = [];
-        let variables = text.trim()
-            .replaceAll(/\s\s+/g, ' ')
-            .split(/\r\n|\n/);
+        let variables = text.split(" ")
         for (let variable of variables) {
             let neg = variable.startsWith("-");
             if (neg) {
@@ -28,11 +29,11 @@ export class Formula {
 }
 
 export class Variable {
-    text: string;
+    identifier: string;
     neg: boolean;
 
-    constructor(text: string, neg: boolean) {
-        this.text = text;
+    constructor(identifier: string, neg: boolean) {
+        this.identifier = identifier;
         this.neg = neg;
     }
 }

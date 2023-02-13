@@ -156,13 +156,13 @@ function test() {
     // })
     update();
 }
+
+defineExpose({ test });
 </script>
 
 
 <template>
-    <div id="d3-test">
-        <button @click="test">Test</button>
-    </div>
+    <div id="d3-test"></div>
 </template>
 
 

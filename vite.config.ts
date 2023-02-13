@@ -28,6 +28,7 @@ export default defineConfig({
     alias: {
       '@': '/src',
       '@components': '/src/components',
+      '@ts': '/src/ts',
       '@views': '/src/views',
       '@assets': '/src/assets',
       '@routes': '/src/router/routes',
