@@ -1,34 +1,91 @@
+export type Eval = "sat" | "unsat" | "unknown";
+
+export interface Model {
+    [literal:string]: boolean;
+}
+
 export class CNF {
-    formulas: Formula[];
+    clauses: Clause[];
+    literals: string[];
 
     constructor(text: string) {
-        this.formulas = []
-        let lines = text.trim()
-            .replaceAll(/\s\s+/g, " ")
-            .split(/\r\n|\n/);
+        this.clauses = []
+        this.literals = []
+
+        let lines = text.split(/\r\n|\n/);
         for (let line of lines) {
-            this.formulas.push(new Formula(line));
+            this.clauses.push(new Clause(line));
         }
+
+        for (let clause of this.clauses) {
+            for (let literal of clause.literals) {
+                if (!this.literals.includes(literal.identifier)) {
+                    this.literals.push(literal.identifier);
+                }
+            }
+        }
+        this.literals.sort();
+    }
+
+    evaluate(model: Model): Eval {
+        let is_unknown = false;
+        for (let clause of this.clauses) {
+            let result = clause.evaluate(model);
+            if (result === "unsat") {
+                return result;
+            }
+            if (result === "unknown") {
+                is_unknown = true;
+            }
+        }
+        if (is_unknown) {
+            return "unknown";
+        }
+        return "sat";
     }
 }
 
-export class Formula {
-    variables: Variable[];
+export class Clause {
+    literals: Literal[];
 
     constructor(text: string) {
-        this.variables = [];
-        let variables = text.split(" ")
-        for (let variable of variables) {
-            let neg = variable.startsWith("-");
+        this.literals = [];
+        let literals = text.trim()
+            .replaceAll(/\s\s+/g, " ")
+            .split(" ")
+        for (let literal of literals) {
+            let neg = literal.startsWith("-");
             if (neg) {
-                variable = variable.slice(1);
+                literal = literal.slice(1);
             }
-            this.variables.push(new Variable(variable, neg));
+            this.literals.push(new Literal(literal, neg));
+        }
+    }
+
+    evaluate(model: Model): Eval {
+        let identifier_unknown = false;
+        for (let literal of this.literals) {
+            if (!(literal.identifier in model)) {
+                identifier_unknown = true;
+                continue;
+            }
+            let value = model[literal.identifier];
+            if (literal.neg) {
+                value = !value;
+            }
+            if (value) {
+                return "sat";
+            }
+        }
+        if (!identifier_unknown) {
+            return "unsat";
+        } else {
+            return "unknown";
         }
     }
 }
 
-export class Variable {
+export class Literal {
     identifier: string;
     neg: boolean;
 

@@ -13,8 +13,9 @@ const d3Test = ref();
 function test() {
     let cnf = new CNF(formulaString.value);
     console.log(cnf);
-    for (let i of dpll()) {
-        console.log(i);
+    for (let result of dpll(cnf)) {
+        console.log(result.model);
+        console.log(result.result);
     }
 }
 </script>
