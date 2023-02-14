@@ -6,28 +6,28 @@ import { HierarchyPointNode } from "d3";
 
 var id = 0;
 
-const data: TreeNode = {
-    id: id,
-    children: []
-}
+// const data: TreeNode = {
+//     id: id,
+//     children: []
+// }
 
-var depth = 1
-addChilds(data, depth);
+// var depth = 1
+// addChilds(data, depth);
 
-function addChilds(node: TreeNode, depth: number) {
-    if (depth <= 0) return;
-    let child1 = {
-        id: ++id,
-        children: []
-    };
-    let child2 = {
-        id: ++id,
-        children: []
-    };
-    addChilds(child1, depth - 1);
-    addChilds(child2, depth - 1);
-    node.children?.push(child1, child2);
-}
+// function addChilds(node: TreeNode, depth: number) {
+//     if (depth <= 0) return;
+//     let child1 = {
+//         id: ++id,
+//         children: []
+//     };
+//     let child2 = {
+//         id: ++id,
+//         children: []
+//     };
+//     addChilds(child1, depth - 1);
+//     addChilds(child2, depth - 1);
+//     node.children?.push(child1, child2);
+// }
 
 type TreeLayoutNode = HierarchyPointNode<TreeNode>;
 
@@ -40,12 +40,10 @@ const animationDuration = 1000;
 
 
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
-var linkGroup: GroupSelection | null = null
+var linkGroup: GroupSelection | null = null;
 var nodeGroup: GroupSelection | null = null;
 
 onMounted(() => {
-
-
     const svg = d3.select("#d3-test").insert("svg")
         .attr("height", "100%")
         .attr("width", "100%")
@@ -63,10 +61,14 @@ onMounted(() => {
     linkGroup = group.insert("g").attr("class", "tree-links");
     nodeGroup = group.insert("g").attr("class", "tree-nodes");
 
-    update();
+    update({
+        id: 0,
+        name: "root",
+        children: []
+    });
 });
 
-function update() {
+function update(data: TreeNode) {
     let tree = d3.tree<TreeNode>()
         .size([width - padding * 2, height - padding * 2])
         .separation((a, b) => {
@@ -80,13 +82,14 @@ function update() {
         node.x += padding;
         node.y += padding;
     });
-
+    
+    
     let links = treeData.links();
-
+    
     let linkPathGen = d3.linkVertical<SVGPathElement, TreeLayoutNode>().x(d => d.x).y(d => d.y);
     // const linkPathGen = d3.link<SVGPathElement, TreeLayoutNode>(d3.curveBasis).x(d => d.x).y(d => d.y);
 
-    let linkSelection = linkGroup?.selectAll(".tree-link").data(links)
+    let linkSelection = linkGroup?.selectAll(".tree-link").data(links, (d) => (d as any).target.data.id)
     linkSelection?.join(
         enter => {
             let linkEnter = enter.append("path").attr("class", "tree-link");
@@ -107,20 +110,21 @@ function update() {
                 .attr("opacity", 1)
     )
 
-    let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData);
+    let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData, (d) => (d as any).data.id);
     nodesSelection?.join(
         enter => {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
 
             nodeEnter.append("circle")
                 .attr("r", 10)
-                .attr("fill", "#666");
+                .attr("fill", "#66F");
 
             nodeEnter.append("text")
-                .attr("text-anchor", "middle")
+                .attr("text-anchor", "right")
                 .attr("dy", 5)
-                .attr("fill", "white")
-                .text(d => `${d.data.id}`)
+                .attr("dx", 15)
+                .attr("fill", "black")
+                .text(d => `${d.data.name}`)
 
             nodeEnter.attr("transform", d => `translate(${d.x},${d.y})`)
                 .attr("opacity", 0)
@@ -137,27 +141,14 @@ function update() {
                 .attr("transform", (d) => `translate(${d.x},${d.y})`)
                 .attr("opacity", 1);
 
-            nodeUpdate.select("text").text(d => `${d.data.id}`)
+            nodeUpdate.select("text").text(d => `${d.data.name}`)
 
             return nodeUpdate;
         }
     )
 }
 
-function test() {
-    depth += 1;
-    id = 0;
-    data.children = []
-    addChilds(data, depth);
-
-    // data.children![0].children?.push({
-    //     id: ++id,
-    //     children: []
-    // })
-    update();
-}
-
-defineExpose({ test });
+defineExpose({ update: update });
 </script>
 
 
