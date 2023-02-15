@@ -41,7 +41,7 @@ async function test() {
 
 function addDataSet(result: DpllResult) {
     pathId++;
-    let keys = Object.keys(result.model);
+    let keys = Object.keys(result.model).sort();
     let d = data;
     d.pathId = pathId
     for (let key of keys) {

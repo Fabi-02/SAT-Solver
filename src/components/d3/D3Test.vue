@@ -75,8 +75,8 @@ function update(data: TreeNode, pathId: number) {
             let linkEnter = enter.append("path").attr("class", "tree-link");
 
             linkEnter.attr("d", linkPathGen as any)
-                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "black")
-                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "3" : "1")
+                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "#AAA")
+                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "2" : "1")
                 .attr("opacity", 0)
                 .transition()
                 .delay(animationDuration / 2)
@@ -88,8 +88,8 @@ function update(data: TreeNode, pathId: number) {
         update =>
             update.transition()
                 .duration(animationDuration / 2)
-                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "black")
-                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "3" : "1")
+                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "#AAA")
+                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "2" : "1")
                 .attr("d", linkPathGen as any)
                 .attr("opacity", 1)
     )
@@ -100,10 +100,10 @@ function update(data: TreeNode, pathId: number) {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
 
             nodeEnter.append("circle")
-                .attr("r", 10)
+                .attr("r", 6)
                 // .attr("fill", "white")
-                .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
-                .attr("stroke-width", "3")
+                // .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
+                // .attr("stroke-width", "3")
                 .attr("fill", (d) => {
                     switch ((d as any).data.result as Eval) {
                         case "sat":
@@ -138,7 +138,7 @@ function update(data: TreeNode, pathId: number) {
                 .attr("opacity", 1);
 
             nodeUpdate.select("circle")
-                .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
+                // .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
                 .attr("fill", (d) => {
                     switch ((d as any).data.result as Eval) {
                         case "sat":
