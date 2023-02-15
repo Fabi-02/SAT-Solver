@@ -12,6 +12,7 @@ const formulaString = ref("-a b\nc -d\ne f");
 const d3Test = ref();
 
 var id = 0;
+var pathId = 0;
 var data: TreeNode;
 
 const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout(res, ms))
@@ -19,8 +20,10 @@ const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout
 async function test() {
     id = 0;
     data = {
-        id: ++id,
-        name: "root",
+        id: id++,
+        pathId: pathId,
+        name: "",
+        result: "unknown",
         children: []
     };
 
@@ -28,9 +31,8 @@ async function test() {
     console.log(cnf);
 
     let dpll_gen = dpll(cnf);
-    dpll_gen.next();
     for (let result of dpll_gen) {
-        console.log(result.model);
+        console.log(result);
         addDataSet(result);
         await timer(500);
     }
@@ -38,8 +40,10 @@ async function test() {
 }
 
 function addDataSet(result: DpllResult) {
+    pathId++;
     let keys = Object.keys(result.model);
     let d = data;
+    d.pathId = pathId
     for (let key of keys) {
         let name = key;
         if (result.model[name] === false) {
@@ -53,18 +57,21 @@ function addDataSet(result: DpllResult) {
                 break;
             }
         }
-        if (!found) {
-            console.log(id);
+        if (found) {
+            d.pathId = pathId
+        } else {
             let newChild = {
-                id: ++id,
+                id: id++,
+                pathId: pathId,
                 name: name,
+                result: result.result,
                 children: []
             }
             d.children!.push(newChild);
             d = newChild;
         }
     }
-    d3Test.value.update(data);
+    d3Test.value.update(data, pathId);
 }
 
 </script>

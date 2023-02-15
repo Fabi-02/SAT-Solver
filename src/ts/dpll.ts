@@ -10,19 +10,13 @@ export function* dpll(cnf: CNF, model: Model = {}): Generator<DpllResult> {
     let model_len = Object.keys(model).length;
 
     let cnf_result = cnf.evaluate(model);
-    if (model_len == literals.length || cnf_result !== "unknown") {
-        yield {
-            result: cnf_result,
-            model: model
-        }
-        return;
-    } else {
-        yield {
-            result: cnf_result,
-            model: model
-        }
+    yield {
+        result: cnf_result,
+        model: model
     }
-
+    if (model_len == literals.length || cnf_result !== "unknown") {
+        return;
+    }
     let model1 = {...model};
     let model2 = {...model};
     

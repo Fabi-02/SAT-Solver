@@ -3,31 +3,7 @@ import * as d3 from "d3"
 import { TreeNode } from "./types";
 import { onMounted } from "vue";
 import { HierarchyPointNode } from "d3";
-
-var id = 0;
-
-// const data: TreeNode = {
-//     id: id,
-//     children: []
-// }
-
-// var depth = 1
-// addChilds(data, depth);
-
-// function addChilds(node: TreeNode, depth: number) {
-//     if (depth <= 0) return;
-//     let child1 = {
-//         id: ++id,
-//         children: []
-//     };
-//     let child2 = {
-//         id: ++id,
-//         children: []
-//     };
-//     addChilds(child1, depth - 1);
-//     addChilds(child2, depth - 1);
-//     node.children?.push(child1, child2);
-// }
+import { Eval } from "@/ts/formula";
 
 type TreeLayoutNode = HierarchyPointNode<TreeNode>;
 
@@ -51,7 +27,7 @@ onMounted(() => {
         .attr("viewBox", `0 0 ${width} ${height}`)
 
     const group = svg.insert("g")
-        .attr("class", "tree")
+        .attr("class", "tree");
 
     svg.call(d3.zoom().on("zoom", function (e) {
         group.attr("transform", e.transform)
@@ -63,14 +39,17 @@ onMounted(() => {
 
     update({
         id: 0,
-        name: "root",
+        pathId: 0,
+        result: "unknown",
+        name: "",
         children: []
-    });
+    }, 0);
 });
 
-function update(data: TreeNode) {
+function update(data: TreeNode, pathId: number) {
     let tree = d3.tree<TreeNode>()
-        .size([width - padding * 2, height - padding * 2])
+        .nodeSize([50, 50])
+        // .size([width - padding * 2, height - padding * 2])
         .separation((a, b) => {
             return a.parent === b.parent ? 1 : 1
         });
@@ -79,7 +58,8 @@ function update(data: TreeNode) {
     let treeData = tree(root);
 
     treeData.each((node) => {
-        node.x += padding;
+        // node.x += padding;
+        node.x += width / 2;
         node.y += padding;
     });
     
@@ -95,6 +75,8 @@ function update(data: TreeNode) {
             let linkEnter = enter.append("path").attr("class", "tree-link");
 
             linkEnter.attr("d", linkPathGen as any)
+                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "black")
+                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "3" : "1")
                 .attr("opacity", 0)
                 .transition()
                 .delay(animationDuration / 2)
@@ -106,6 +88,8 @@ function update(data: TreeNode) {
         update =>
             update.transition()
                 .duration(animationDuration / 2)
+                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "black")
+                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "3" : "1")
                 .attr("d", linkPathGen as any)
                 .attr("opacity", 1)
     )
@@ -117,14 +101,26 @@ function update(data: TreeNode) {
 
             nodeEnter.append("circle")
                 .attr("r", 10)
-                .attr("fill", "#66F");
+                // .attr("fill", "white")
+                .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
+                .attr("stroke-width", "3")
+                .attr("fill", (d) => {
+                    switch ((d as any).data.result as Eval) {
+                        case "sat":
+                            return "#6D6"
+                        case "unsat":
+                            return "#D66"
+                        case "unknown":
+                            return "#AAA"
+                    }
+                });
 
             nodeEnter.append("text")
                 .attr("text-anchor", "right")
                 .attr("dy", 5)
                 .attr("dx", 15)
                 .attr("fill", "black")
-                .text(d => `${d.data.name}`)
+                .text(d => `${d.data.name}`);
 
             nodeEnter.attr("transform", d => `translate(${d.x},${d.y})`)
                 .attr("opacity", 0)
@@ -140,6 +136,19 @@ function update(data: TreeNode) {
                 .duration(animationDuration / 2)
                 .attr("transform", (d) => `translate(${d.x},${d.y})`)
                 .attr("opacity", 1);
+
+            nodeUpdate.select("circle")
+                .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
+                .attr("fill", (d) => {
+                    switch ((d as any).data.result as Eval) {
+                        case "sat":
+                            return "#6D6"
+                        case "unsat":
+                            return "#D66"
+                        case "unknown":
+                            return "#AAA"
+                    }
+                });
 
             nodeUpdate.select("text").text(d => `${d.data.name}`)
 
