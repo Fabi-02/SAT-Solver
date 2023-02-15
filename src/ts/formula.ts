@@ -4,6 +4,8 @@ export interface Model {
     [literal:string]: boolean;
 }
 
+export const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+
 export class CNF {
     clauses: Clause[];
     literals: string[];
@@ -24,7 +26,7 @@ export class CNF {
                 }
             }
         }
-        this.literals.sort();
+        this.literals.sort(collator.compare);
     }
 
     evaluate(model: Model): Eval {

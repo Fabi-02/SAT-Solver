@@ -3,7 +3,7 @@ import ContentPage from '@components/ContentPage.vue'
 import FormulaInput from '@components/formula/FormulaInput.vue'
 import D3Test from '@components/d3/D3Test.vue'
 import { ref } from 'vue';
-import { CNF, Model } from '@ts/formula';
+import { CNF, collator } from '@ts/formula';
 import { DpllResult, dpll } from '@/ts/dpll';
 import { TreeNode } from '@/components/d3/types';
 
@@ -41,7 +41,7 @@ async function test() {
 
 function addDataSet(result: DpllResult) {
     pathId++;
-    let keys = Object.keys(result.model).sort();
+    let keys = Object.keys(result.model).sort(collator.compare);
     let d = data;
     d.pathId = pathId
     for (let key of keys) {
