@@ -1,11 +1,13 @@
 <script setup lang="ts">
+
 import * as d3 from "d3"
 import { TreeNode } from "./types";
 import { onMounted } from "vue";
-import { HierarchyPointNode } from "d3";
+import { HierarchyLink, HierarchyPointNode } from "d3";
 import { Eval } from "@/ts/formula";
 
 type TreeLayoutNode = HierarchyPointNode<TreeNode>;
+type TreeLayoutLink = HierarchyLink<TreeNode>;
 
 const width = 700;
 const height = 500;
@@ -40,15 +42,18 @@ onMounted(() => {
     update({
         id: 0,
         pathId: 0,
-        result: "unknown",
         name: "",
+        key: "",
+        neg: false,
+        result: "unknown",
+        unit_prop: false,
         children: []
     }, 0);
 });
 
 function update(data: TreeNode, pathId: number) {
     let tree = d3.tree<TreeNode>()
-        .nodeSize([50, 50])
+        .nodeSize([60, 60])
         // .size([width - padding * 2, height - padding * 2])
         .separation((a, b) => {
             return a.parent === b.parent ? 1 : 1
@@ -62,21 +67,31 @@ function update(data: TreeNode, pathId: number) {
         node.x += width / 2;
         node.y += padding;
     });
-    
-    
+
+
     let links = treeData.links();
-    
+
     let linkPathGen = d3.linkVertical<SVGPathElement, TreeLayoutNode>().x(d => d.x).y(d => d.y);
     // const linkPathGen = d3.link<SVGPathElement, TreeLayoutNode>(d3.curveBasis).x(d => d.x).y(d => d.y);
 
-    let linkSelection = linkGroup?.selectAll(".tree-link").data(links, (d) => (d as any).target.data.id)
+    const linkClass = (d: TreeLayoutLink) => {
+        let classes = "tree-link";
+        if (d.target.data.pathId == pathId) {
+            classes += " path-link";
+        }
+        if (d.target.data.unit_prop) {
+            classes += " unit-prop-link";
+        }
+        return classes;
+    }
+
+    let linkSelection = linkGroup?.selectAll(".tree-link").data(links, (d) => (d as TreeLayoutLink).target.data.id)
     linkSelection?.join(
         enter => {
-            let linkEnter = enter.append("path").attr("class", "tree-link");
+            let linkEnter = enter.append("path")
+                .attr("class", linkClass)
 
             linkEnter.attr("d", linkPathGen as any)
-                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "#AAA")
-                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "2" : "1")
                 .attr("opacity", 0)
                 .transition()
                 .delay(animationDuration / 2)
@@ -86,39 +101,38 @@ function update(data: TreeNode, pathId: number) {
             return linkEnter;
         },
         update =>
-            update.transition()
-                .duration(animationDuration / 2)
-                .attr("stroke", (d) => (d as any).target.data.pathId == pathId ? "#0AF" : "#AAA")
-                .attr("stroke-width", (d) => (d as any).target.data.pathId == pathId ? "2" : "1")
+            update.attr("class", linkClass)
+                .transition()
                 .attr("d", linkPathGen as any)
                 .attr("opacity", 1)
+                .duration(animationDuration / 2)
+
     )
 
-    let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData, (d) => (d as any).data.id);
+    const circleFill = (d: TreeLayoutNode) => {
+        switch (d.data.result as Eval) {
+            case "sat":
+                return "#6D6"
+            case "unsat":
+                return "#D66"
+            case "unknown":
+                return "#AAA"
+        }
+    };
+
+    let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData, (d) => (d as TreeLayoutNode).data.id);
     nodesSelection?.join(
         enter => {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
 
             nodeEnter.append("circle")
                 .attr("r", 6)
-                // .attr("fill", "white")
-                // .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
-                // .attr("stroke-width", "3")
-                .attr("fill", (d) => {
-                    switch ((d as any).data.result as Eval) {
-                        case "sat":
-                            return "#6D6"
-                        case "unsat":
-                            return "#D66"
-                        case "unknown":
-                            return "#AAA"
-                    }
-                });
+                .attr("fill", circleFill);
 
             nodeEnter.append("text")
                 .attr("text-anchor", "right")
                 .attr("dy", 5)
-                .attr("dx", 15)
+                .attr("dx", 8)
                 .attr("fill", "black")
                 .text(d => `${d.data.name}`);
 
@@ -139,16 +153,7 @@ function update(data: TreeNode, pathId: number) {
 
             nodeUpdate.select("circle")
                 // .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
-                .attr("fill", (d) => {
-                    switch ((d as any).data.result as Eval) {
-                        case "sat":
-                            return "#6D6"
-                        case "unsat":
-                            return "#D66"
-                        case "unknown":
-                            return "#AAA"
-                    }
-                });
+                .attr("fill", circleFill);
 
             nodeUpdate.select("text").text(d => `${d.data.name}`)
 
@@ -161,16 +166,23 @@ defineExpose({ update: update });
 </script>
 
 
-<template>
-    <div id="d3-test"></div>
-</template>
+<template><div id="d3-test"></div></template>
 
 
 <style lang="css">
 .tree-links {
     fill: none;
-    stroke: black;
-    /* stroke-width: 0.1px; */
+    stroke: #AAA;
+    stroke-width: 1;
+}
+
+.path-link {
+    stroke: #0AF;
+    stroke-width: 2;
+}
+
+.unit-prop-link {
+    stroke-dasharray: 10, 5;
 }
 
 #d3-test>svg {

@@ -4,6 +4,9 @@ export interface TreeNode {
     id: number;
     pathId: number;
     name: string;
+    key: string;
+    neg: boolean;
     result: Eval;
-    children?: TreeNode[];
+    unit_prop: boolean;
+    children: TreeNode[];
 }
