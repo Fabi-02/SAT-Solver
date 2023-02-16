@@ -14,7 +14,7 @@ const height = 500;
 
 const padding = 20;
 
-const animationDuration = 1000;
+const animationDuration = 500;
 
 
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
@@ -26,7 +26,7 @@ onMounted(() => {
         .attr("height", "100%")
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
-        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("viewBox", `0 0 ${width} ${height}`);
 
     const group = svg.insert("g")
         .attr("class", "tree");
@@ -47,6 +47,7 @@ onMounted(() => {
         neg: false,
         result: "unknown",
         unit_prop: false,
+        sat_path: false,
         children: []
     }, 0);
 });
@@ -82,6 +83,9 @@ function update(data: TreeNode, pathId: number) {
         if (d.target.data.unit_prop) {
             classes += " unit-prop-link";
         }
+        if (d.target.data.sat_path) {
+            classes += " sat-path-link";
+        }
         return classes;
     }
 
@@ -91,32 +95,37 @@ function update(data: TreeNode, pathId: number) {
             let linkEnter = enter.append("path")
                 .attr("class", linkClass)
 
-            linkEnter.attr("d", linkPathGen as any)
+            linkEnter.attr("d", d => {
+                let copy: TreeLayoutLink = Object.create(d);
+                copy.target = copy.source; 
+                return linkPathGen(copy as any);
+            })
                 .attr("opacity", 0)
                 .transition()
                 .delay(animationDuration / 2)
+                .attr("opacity", 1)
                 .duration(animationDuration / 2)
-                .attr("opacity", 1);
+                .attr("d", linkPathGen as any)
 
             return linkEnter;
         },
         update =>
             update.attr("class", linkClass)
                 .transition()
-                .attr("d", linkPathGen as any)
                 .attr("opacity", 1)
                 .duration(animationDuration / 2)
+                .attr("d", linkPathGen as any)
 
     )
 
-    const circleFill = (d: TreeLayoutNode) => {
+    const nodeFill = (d: TreeLayoutNode) => {
         switch (d.data.result as Eval) {
             case "sat":
-                return "#6D6"
+                return "#6D6";
             case "unsat":
-                return "#D66"
+                return "#D66";
             case "unknown":
-                return "#AAA"
+                return "#AAA";
         }
     };
 
@@ -126,34 +135,43 @@ function update(data: TreeNode, pathId: number) {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
 
             nodeEnter.append("circle")
-                .attr("r", 6)
-                .attr("fill", circleFill);
+                .attr("r", (d) => (d as TreeLayoutNode).data.result === "unknown" ? 4 : 6)
+                .attr("fill", nodeFill)
 
             nodeEnter.append("text")
                 .attr("text-anchor", "right")
                 .attr("dy", 5)
                 .attr("dx", 8)
-                .attr("fill", "black")
+                .attr("fill", (d) => (d as TreeLayoutNode).data.neg ? "#A44" : "#4A4")
                 .text(d => `${d.data.name}`);
 
-            nodeEnter.attr("transform", d => `translate(${d.x},${d.y})`)
+            nodeEnter.filter(d => d.data.result !== "unknown").append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", 30)
+                .attr("font-weight", "bold")
+                .attr("fill", (d) => (d as TreeLayoutNode).data.result === "unsat" ? "#A44" : "#4A4")
+                .text(d => `${d.data.result.toUpperCase()}`);
+
+            nodeEnter
                 .attr("opacity", 0)
+                .attr("transform", d => `translate(${d.parent?.x || d.x},${d.parent?.y || d.y})`)
                 .transition()
                 .delay(animationDuration / 2)
+                .attr("opacity", 1)
                 .duration(animationDuration / 2)
-                .attr("opacity", 1);
+                .attr("transform", d => `translate(${d.x},${d.y})`);
 
             return nodeEnter;
         },
         update => {
             let nodeUpdate = update.transition()
                 .duration(animationDuration / 2)
-                .attr("transform", (d) => `translate(${d.x},${d.y})`)
+                .attr("transform", d => `translate(${d.x},${d.y})`)
                 .attr("opacity", 1);
 
             nodeUpdate.select("circle")
                 // .attr("stroke", (d) => (d as any).data.pathId == pathId ? "#0AF" : "black")
-                .attr("fill", circleFill);
+                .attr("fill", nodeFill);
 
             nodeUpdate.select("text").text(d => `${d.data.name}`)
 
@@ -174,6 +192,11 @@ defineExpose({ update: update });
     fill: none;
     stroke: #AAA;
     stroke-width: 1;
+}
+
+.sat-path-link {
+    stroke: #6D6;
+    stroke-width: 2;
 }
 
 .path-link {

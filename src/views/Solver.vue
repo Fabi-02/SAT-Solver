@@ -26,6 +26,7 @@ const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout
 
 async function test() {
     id = 0;
+    pathId = 0;
     data = {
         id: id++,
         pathId: pathId,
@@ -34,6 +35,7 @@ async function test() {
         neg: false,
         result: "unknown",
         unit_prop: false,
+        sat_path: false,
         children: []
     };
 
@@ -44,8 +46,10 @@ async function test() {
     for (let result of dpll_gen) {
         // console.log(result);
         addDataSet(result);
-        await timer(500);
+        await timer(250);
     }
+    pathId = 0;
+    d3Tree.value.update(data, pathId);
     console.log(data);
 }
 
@@ -73,6 +77,9 @@ function addDataSet(result: DpllResult) {
     while (next = nextLiteral(d, model)) {
         d = next;
         d.pathId = pathId;
+        if (result.result === "sat") {
+            d.sat_path = true;
+        }
     }
 
     let keys = Object.keys(model).sort(collator.compare);
@@ -91,6 +98,7 @@ function addDataSet(result: DpllResult) {
             neg: !model[key],
             result: result.result,
             unit_prop: result.unit_prop,
+            sat_path: result.result === "sat" ? true : false,
             children: []
         }
         if (model[key]) {

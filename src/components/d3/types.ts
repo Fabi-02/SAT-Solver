@@ -8,5 +8,6 @@ export interface TreeNode {
     neg: boolean;
     result: Eval;
     unit_prop: boolean;
+    sat_path: boolean;
     children: TreeNode[];
 }
