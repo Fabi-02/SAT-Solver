@@ -28,7 +28,7 @@ export function* dpll(cnf: CNF, model: Model = {}): Generator<DpllResult> {
         let cnf_result = cnf.evaluate(model);
         yield {
             result: cnf_result,
-            model: model,
+            model: {...model},
             unit_prop: unit_prop
         };
         if (Object.keys(model).length == literals.length || cnf_result !== "unknown") {

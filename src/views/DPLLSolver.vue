@@ -24,25 +24,37 @@ var data: TreeNode;
 
 const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout(res, ms))
 
-async function test() {
-    id = 0;
-    pathId = 0;
-    data = {
-        id: id++,
-        pathId: pathId,
-        name: "",
-        key: "",
-        neg: false,
-        result: "unknown",
-        unit_prop: false,
-        sat_path: false,
-        children: []
-    };
+var dpll_gen: Generator<DpllResult> | null = null;
 
-    let cnf = new CNF(formulaString.value);
-    console.log(cnf);
+function get_dpll_gen() {
+    if (dpll_gen === null) {
+        id = 0;
+        pathId = 0;
+        data = {
+            id: id++,
+            pathId: pathId,
+            name: "",
+            key: "",
+            neg: false,
+            result: "unknown",
+            unit_prop: false,
+            sat_path: false,
+            children: []
+        };
 
-    let dpll_gen = dpll(cnf);
+        let cnf = new CNF(formulaString.value);
+
+        dpll_gen = dpll(cnf)
+    }
+    return dpll_gen;
+}
+
+function reset_dpll_gen() {
+    dpll_gen = null;
+}
+
+async function autoSolve() {
+    let dpll_gen = get_dpll_gen();
     for (let result of dpll_gen) {
         // console.log(result);
         addDataSet(result);
@@ -51,6 +63,19 @@ async function test() {
     pathId = 0;
     d3Tree.value.update(data, pathId);
     console.log(data);
+    reset_dpll_gen();
+}
+
+function nextStep() {
+    let dpll_gen = get_dpll_gen();
+    let next = dpll_gen.next()
+    if (next.done) {
+        reset_dpll_gen();
+        pathId = 0;
+        d3Tree.value.update(data, pathId);
+    } else {
+        addDataSet(next.value);
+    }
 }
 
 function nextLiteral(data: TreeNode, model: Model): TreeNode | null {
@@ -114,10 +139,13 @@ function addDataSet(result: DpllResult) {
 </script>
 
 <template>
-    <ContentPage name="SAT-Solver">
+    <ContentPage name="DPLL-Solver">
         <div class="flex space-x-5 h-full">
             <div class="w-60 flex flex-col shrink-0">
-                <button @click="test" class="w-full">Test</button>
+                <div class="w-full flex flex-row">
+                    <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
+                    <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>
+                </div>
                 <FormulaInput v-model:formula="formulaString" class="h-full"/>
             </div>
             <div class="relative w-full">

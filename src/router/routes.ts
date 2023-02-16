@@ -8,9 +8,14 @@ const routes = [
     component: StartPage
   },
   {
-    path: '/solver',
-    name: 'SAT-Solver',
-    component: () => import('@views/Solver.vue')
+    path: '/dpll-solver',
+    name: 'DPLL-Solver',
+    component: () => import('@/views/DPLLSolver.vue')
+  },
+  {
+    path: '/cdcl-solver',
+    name: 'CDCL-Solver',
+    component: () => import('@/views/CDCLSolver.vue')
   },
   {
     path: '/n-queen',
