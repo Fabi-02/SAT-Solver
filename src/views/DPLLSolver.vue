@@ -132,8 +132,8 @@ function addDataSet(result: DpllResult) {
             d.children.unshift(newChild);
         }
         d = newChild;
+        d3Tree.value.update(data, pathId);
     }
-    d3Tree.value.update(data, pathId);
 }
 
 </script>

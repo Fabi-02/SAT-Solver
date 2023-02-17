@@ -2,7 +2,7 @@
 
 import * as d3 from "d3"
 import { TreeNode } from "./types";
-import { onMounted } from "vue";
+import { h, onMounted } from "vue";
 import { HierarchyLink, HierarchyPointNode } from "d3";
 import { Eval } from "@/ts/formula";
 
@@ -20,20 +20,25 @@ const animationDuration = 500;
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var linkGroup: GroupSelection | null = null;
 var nodeGroup: GroupSelection | null = null;
+var zoom: d3.ZoomBehavior<Element, unknown> | null;
 
 onMounted(() => {
     const svg = d3.select("#d3-test").insert("svg")
         .attr("height", "100%")
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
-        .attr("viewBox", `0 0 ${width} ${height}`);
+        .attr("viewBox", `${-width / 2} 0 ${width} ${height}`);
 
     const group = svg.insert("g")
         .attr("class", "tree");
 
-    svg.call(d3.zoom().on("zoom", function (e) {
+    zoom = d3.zoom().on("zoom", function (e) {
         group.attr("transform", e.transform)
-    }) as any);
+    });
+
+    svg.call(zoom as any);
+
+    // svg.call(zoom!.translateTo as any, 0, height / 2);
 
 
     linkGroup = group.insert("g").attr("class", "tree-links");
@@ -52,7 +57,8 @@ onMounted(() => {
     }, 0);
 });
 
-function update(data: TreeNode, pathId: number) {
+function update(data: TreeNode, pathId: number, panToId: number | null = null) {
+ 
     let tree = d3.tree<TreeNode>()
         .nodeSize([60, 60])
         // .size([width - padding * 2, height - padding * 2])
@@ -65,8 +71,16 @@ function update(data: TreeNode, pathId: number) {
 
     treeData.each((node) => {
         // node.x += padding;
-        node.x += width / 2;
         node.y += padding;
+
+        if (panToId !== null) {
+            if (node.data.id == panToId) {
+                d3.select('#d3-test > svg')
+                    .transition()
+                    .duration(animationDuration / 2)
+                    .call(zoom!.translateTo as any, node.x, node.y);
+            }
+        }
     });
 
 
