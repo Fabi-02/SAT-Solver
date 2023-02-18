@@ -16,6 +16,8 @@ const formulaString = ref(`2 3 4 -5
 1 4 -5
 1 -2 -3 -4 -5 6`);
 
+const useUnitProp = ref(true);
+
 const d3Tree = ref();
 
 var id = 0;
@@ -44,7 +46,7 @@ function get_dpll_gen() {
 
         let cnf = new CNF(formulaString.value);
 
-        dpll_gen = dpll(cnf)
+        dpll_gen = dpll(cnf, useUnitProp.value)
     }
     return dpll_gen;
 }
@@ -142,6 +144,11 @@ function addDataSet(result: DpllResult) {
     <ContentPage name="DPLL-Solver">
         <div class="flex space-x-5 h-full">
             <div class="w-60 flex flex-col shrink-0">
+                <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
+                    <input type="checkbox" value="" class="sr-only peer" v-model="useUnitProp">
+                    <div class="w-9 h-5 bg-gray-200 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
+                </label>
                 <div class="w-full flex flex-row">
                     <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
                     <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>

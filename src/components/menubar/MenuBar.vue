@@ -15,8 +15,7 @@ import MenuItem from './MenuItem.vue'
         <h1 class="font-bold text-xl px-3 text-white whitespace-nowrap">SAT-Solver</h1>
         <div class="ml-6 flex items-baseline space-x-4">
             <MenuItem to="/"><font-awesome-icon icon="fa-solid fa-house" /> Startseite</MenuItem>
-            <MenuItem to="/dpll-solver"><font-awesome-icon icon="fa-solid fa-gears" /> DPLL-Solver</MenuItem>
-            <MenuItem to="/cdcl-solver"><font-awesome-icon icon="fa-solid fa-bolt" /> CDCL-Solver</MenuItem>
+            <MenuItem to="/solver"><font-awesome-icon icon="fa-solid fa-gears" /> Solver</MenuItem>
             <MenuItem to="/n-queen"><font-awesome-icon icon="fa-solid fa-chess-queen" /> N-Damen</MenuItem>
             <MenuItem to="/sudoku"><font-awesome-icon icon="fa-solid fa-border-all" /> Sudoku</MenuItem>
         </div>

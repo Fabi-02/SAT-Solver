@@ -20,21 +20,22 @@ function unitPropagation(cnf: CNF, model: Model): boolean {
     return false;
 }
 
-export function* dpll(cnf: CNF, model: Model = {}): Generator<DpllResult> {
+export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): Generator<DpllResult> {
     let literals = cnf.literals;
 
-    let  unit_prop = false;
+    let  unitProp = false;
     do {
         let cnf_result = cnf.evaluate(model);
         yield {
             result: cnf_result,
             model: {...model},
-            unit_prop: unit_prop
+            unit_prop: unitProp
         };
         if (Object.keys(model).length == literals.length || cnf_result !== "unknown") {
             return;
         }
-        unit_prop = true;
+        if (!useUnitProp) break;
+        unitProp = true;
     } while(unitPropagation(cnf, model));
     
     let model1 = {...model};
@@ -50,7 +51,7 @@ export function* dpll(cnf: CNF, model: Model = {}): Generator<DpllResult> {
     if (next_literal == null) return;
 
     model1[next_literal] = false
-    let dpll_result = dpll(cnf, model1);
+    let dpll_result = dpll(cnf, useUnitProp, model1);
 
     let last_result: Eval = "unknown";
     for (let result of dpll_result) {
@@ -60,6 +61,6 @@ export function* dpll(cnf: CNF, model: Model = {}): Generator<DpllResult> {
     if (last_result === "sat") return;
 
     model2[next_literal] = true
-    dpll_result = dpll(cnf, model2);
+    dpll_result = dpll(cnf, useUnitProp, model2);
     yield* dpll_result;
 }

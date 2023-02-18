@@ -18,22 +18,70 @@ const animationDuration = 500;
 
 
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
-var linkGroup: GroupSelection | null = null;
-var nodeGroup: GroupSelection | null = null;
-var zoom: d3.ZoomBehavior<Element, unknown> | null;
+var linkGroup: GroupSelection;
+var nodeGroup: GroupSelection;
+
+var zoom: d3.ZoomBehavior<Element, unknown>;
+var mouseover: (event: MouseEvent, d: TreeLayoutNode) => void;
+var mousemove: (event: MouseEvent) => void;
+var mouseleave: (event: MouseEvent) => void;
 
 onMounted(() => {
-    const svg = d3.select("#d3-test").insert("svg")
+    const svg = d3.select("#d3-content").insert("svg")
         .attr("height", "100%")
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
         .attr("viewBox", `${-width / 2} 0 ${width} ${height}`);
 
+        const tooltip = d3.select("#d3-content").append("div")
+        .style("visibility", "hidden")
+        .attr("class", "tooltip border border-gray-500 p-2 rounded-md bg-gray-100")
+        .style("position", "fixed");
+
+    mouseover = (event: MouseEvent, d: TreeLayoutNode) => {
+        let result = "";
+        switch(d.data.result) {
+            case "sat": 
+                result = "<span class=\"text-green-600\">SAT</span>";
+                break;
+            case "unsat":
+                result = "<span class=\"text-red-600\">UNSAT</span>";
+                break;
+            case "unknown":
+                result = "<span class=\"text-gray-500\">UNKNOWN</span>";
+                break;
+        }
+        let htmlData = {
+            "Literal": `"${d.data.key}"`, 
+            "Wert": d.data.neg ? "<span class=\"text-red-600\">False</span>" : "<span class=\"text-green-600\">True</span>", 
+            "Ergebnis": result,
+        };
+        let html = "";
+        for (let [key, value] of Object.entries(htmlData)) {
+            html += `${key} <span class="text-gray-500">:</span> ${value}<br>`;
+        }
+        tooltip.html(html)
+            .style("visibility", "visible");
+    };
+
+    mousemove = (event: MouseEvent) => {
+        tooltip.style("left", `${event.pageX + 20}px`)
+            .style("top", `${event.pageY - 30}px`);
+            // .style("left", `calc(${(event.pageX + 10)}px - 200%)`)
+            // .style("top", `calc(${(event.pageY + 10)}px - 200%)`)
+    };
+
+    mouseleave = (event: MouseEvent) => {
+        tooltip
+            .style("visibility", "hidden");
+    };
+
     const group = svg.insert("g")
         .attr("class", "tree");
 
     zoom = d3.zoom().on("zoom", function (e) {
-        group.attr("transform", e.transform)
+        mousemove(e.sourceEvent as MouseEvent);
+        group.attr("transform", e.transform);
     });
 
     svg.call(zoom as any);
@@ -104,6 +152,7 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
     }
 
     let linkSelection = linkGroup?.selectAll(".tree-link").data(links, (d) => (d as TreeLayoutLink).target.data.id)
+
     linkSelection?.join(
         enter => {
             let linkEnter = enter.append("path")
@@ -144,6 +193,11 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
     };
 
     let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData, (d) => (d as TreeLayoutNode).data.id);
+    
+    nodesSelection?.on("mouseover", mouseover! as any)
+        .on("mousemove", mousemove! as any)
+        .on("mouseleave", mouseleave! as any)
+    
     nodesSelection?.join(
         enter => {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
@@ -198,7 +252,7 @@ defineExpose({ update: update });
 </script>
 
 
-<template><div id="d3-test"></div></template>
+<template><div id="d3-content" class="select-none"></div></template>
 
 
 <style lang="css">
