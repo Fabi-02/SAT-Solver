@@ -35,7 +35,8 @@ onMounted(() => {
 
         const tooltip = d3.select("#d3-content").append("div")
         .style("visibility", "hidden")
-        .attr("class", "tooltip border border-gray-500 p-2 rounded-md bg-gray-100")
+        .attr("class", "tooltip border border-gray-500 p-2 rounded-md")
+        .style("background-color", "rgba(248, 248, 248, .8)")
         .style("position", "fixed");
 
     mouseover = (event: MouseEvent, d: TreeLayoutNode) => {
@@ -66,7 +67,7 @@ onMounted(() => {
 
     mousemove = (event: MouseEvent) => {
         tooltip.style("left", `${event.pageX + 20}px`)
-            .style("top", `${event.pageY - 30}px`);
+            .style("top", `${event.pageY - 20}px`);
             // .style("left", `calc(${(event.pageX + 10)}px - 200%)`)
             // .style("top", `calc(${(event.pageY + 10)}px - 200%)`)
     };
@@ -123,7 +124,7 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
 
         if (panToId !== null) {
             if (node.data.id == panToId) {
-                d3.select('#d3-test > svg')
+                d3.select('#d3-content > svg')
                     .transition()
                     .duration(animationDuration / 2)
                     .call(zoom!.translateTo as any, node.x, node.y);
@@ -252,7 +253,9 @@ defineExpose({ update: update });
 </script>
 
 
-<template><div id="d3-content" class="select-none"></div></template>
+<template>
+    <div id="d3-content" class="select-none"></div>
+</template>
 
 
 <style lang="css">
@@ -276,7 +279,7 @@ defineExpose({ update: update });
     stroke-dasharray: 10, 5;
 }
 
-#d3-test>svg {
+#d3-content>svg {
     position: absolute;
 }
 </style>
