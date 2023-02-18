@@ -1,10 +1,14 @@
 <script setup lang="ts">
 
 import * as d3 from "d3"
-import { TreeNode } from "./types";
-import { h, onMounted } from "vue";
+import { Eval, TreeNode } from "./types";
+import { onMounted } from "vue";
 import { HierarchyLink, HierarchyPointNode } from "d3";
-import { Eval } from "@/ts/formula";
+
+const props = defineProps({
+    nodeSizeX: { type: Number, default: 60 },
+    nodeSizeY: { type: Number, default: 60 }
+});
 
 type TreeLayoutNode = HierarchyPointNode<TreeNode>;
 type TreeLayoutLink = HierarchyLink<TreeNode>;
@@ -27,13 +31,13 @@ var mousemove: (event: MouseEvent) => void;
 var mouseleave: (event: MouseEvent) => void;
 
 onMounted(() => {
-    const svg = d3.select("#d3-content").insert("svg")
+    const svg = d3.select("#d3-tree").insert("svg")
         .attr("height", "100%")
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
         .attr("viewBox", `${-width / 2} 0 ${width} ${height}`);
 
-        const tooltip = d3.select("#d3-content").append("div")
+    const tooltip = d3.select("#d3-tree").append("div")
         .style("visibility", "hidden")
         .attr("class", "tooltip border border-gray-500 p-2 rounded-md")
         .style("background-color", "rgba(248, 248, 248, .8)")
@@ -109,7 +113,7 @@ onMounted(() => {
 function update(data: TreeNode, pathId: number, panToId: number | null = null) {
  
     let tree = d3.tree<TreeNode>()
-        .nodeSize([60, 60])
+        .nodeSize([props.nodeSizeX, props.nodeSizeY])
         // .size([width - padding * 2, height - padding * 2])
         .separation((a, b) => {
             return a.parent === b.parent ? 1 : 1
@@ -124,7 +128,7 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
 
         if (panToId !== null) {
             if (node.data.id == panToId) {
-                d3.select('#d3-content > svg')
+                d3.select('#d3-tree > svg')
                     .transition()
                     .duration(animationDuration / 2)
                     .call(zoom!.translateTo as any, node.x, node.y);
@@ -254,7 +258,7 @@ defineExpose({ update: update });
 
 
 <template>
-    <div id="d3-content" class="select-none"></div>
+    <div id="d3-tree" class="select-none"></div>
 </template>
 
 
@@ -279,7 +283,7 @@ defineExpose({ update: update });
     stroke-dasharray: 10, 5;
 }
 
-#d3-content>svg {
+#d3-tree > svg {
     position: absolute;
 }
 </style>

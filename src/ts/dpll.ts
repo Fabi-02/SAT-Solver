@@ -1,4 +1,5 @@
-import { CNF, Eval, Model } from "@ts/formula";
+import { Eval, Model } from "@/components/d3/types";
+import { CNF } from "@ts/formula";
 
 export interface DpllResult {
     result: Eval;
@@ -50,7 +51,7 @@ export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): G
     }
     if (next_literal == null) return;
 
-    model1[next_literal] = false
+    model1[next_literal] = false;
     let dpll_result = dpll(cnf, useUnitProp, model1);
 
     let last_result: Eval = "unknown";
@@ -60,7 +61,7 @@ export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): G
     }
     if (last_result === "sat") return;
 
-    model2[next_literal] = true
+    model2[next_literal] = true;
     dpll_result = dpll(cnf, useUnitProp, model2);
     yield* dpll_result;
 }

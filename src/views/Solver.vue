@@ -3,9 +3,9 @@ import ContentPage from '@components/ContentPage.vue'
 import FormulaInput from '@components/formula/FormulaInput.vue'
 import D3Tree from '@/components/d3/D3Tree.vue'
 import { ref } from 'vue';
-import { CNF, Model, collator } from '@ts/formula';
+import { CNF, collator } from '@ts/formula';
 import { DpllResult, dpll } from '@/ts/dpll';
-import { TreeNode } from '@/components/d3/types';
+import { Model, TreeNode } from '@/components/d3/types';
 
 const formulaString = ref(`2 3 4 -5
 1 5 -6
@@ -156,7 +156,7 @@ function addDataSet(result: DpllResult) {
                 <FormulaInput v-model:formula="formulaString" class="h-full"/>
             </div>
             <div class="relative w-full">
-                <D3Tree ref="d3Tree"/>
+                <D3Tree ref="d3Tree" />
             </div>
         </div>
     </ContentPage>

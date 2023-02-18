@@ -1,4 +1,8 @@
-import { Eval } from "@/ts/formula";
+export type Eval = "sat" | "unsat" | "unknown";
+
+export interface Model {
+    [literal:string]: boolean;
+}
 
 export interface TreeNode {
     id: number;

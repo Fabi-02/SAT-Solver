@@ -1,8 +1,4 @@
-export type Eval = "sat" | "unsat" | "unknown";
-
-export interface Model {
-    [literal:string]: boolean;
-}
+import { Eval, Model } from "@/components/d3/types";
 
 export const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 

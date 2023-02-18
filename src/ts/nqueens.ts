@@ -55,10 +55,8 @@ export function nQueensFormula(N: number): string {
 
     // atmost 1 queen per negative diagonal from top
     Ns.slice(1, N).forEach(c => {
-        console.log("c", c)
         let literals: string[] = [];
         Ns.slice(0, N - c).forEach(x => {
-            console.log("x", x)
             literals.push(varmap(x, c + x));
         });
         formulas += atmOne(literals);
@@ -82,5 +80,5 @@ export function nQueensFormula(N: number): string {
         formulas += atmOne(literals);
     });
 
-    return formulas;
+    return formulas.slice(0, formulas.length - 1);
 }
