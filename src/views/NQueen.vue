@@ -8,7 +8,7 @@ import { Model, TreeNode } from '@/components/d3/types';
 import { nQueensFormula } from '@/ts/nqueens';
 import D3NQueens from '@/components/d3/D3NQueens.vue';
 
-const N = ref(6);
+const N = ref(4);
 
 const formulaString = nQueensFormula(N.value);
 

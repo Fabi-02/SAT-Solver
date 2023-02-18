@@ -199,10 +199,6 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
 
     let nodesSelection = nodeGroup?.selectAll(".tree-node").data(treeData, (d) => (d as TreeLayoutNode).data.id);
     
-    nodesSelection?.on("mouseover", mouseover! as any)
-        .on("mousemove", mousemove! as any)
-        .on("mouseleave", mouseleave! as any)
-    
     nodesSelection?.join(
         enter => {
             let nodeEnter = enter.append("g").attr("class", "tree-node");
@@ -233,6 +229,10 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
                 .attr("opacity", 1)
                 .duration(animationDuration / 2)
                 .attr("transform", d => `translate(${d.x},${d.y})`);
+            
+            nodeEnter.on("mouseover", mouseover! as any)
+                .on("mousemove", mousemove! as any)
+                .on("mouseleave", mouseleave! as any)
 
             return nodeEnter;
         },
