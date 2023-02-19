@@ -1,15 +1,10 @@
-import { Eval, Model } from "@/components/d3/types";
+import { CNFResult, DpllResult, Eval, Model } from "@/components/d3/types";
 import { CNF } from "@ts/formula";
 
-export interface DpllResult {
-    result: Eval;
-    model: Model;
-    unit_prop: boolean;
-}
-
-function unitPropagation(cnf: CNF, model: Model): boolean {
-    for (let clause of cnf.clauses) {
-        let result = clause.evaluate(model)
+function unitPropagation(cnf: CNFResult, model: Model): boolean {
+    for (let clause_result of cnf.results) {
+        let clause = clause_result.clause;
+        let result = clause_result.result;
         if (result !== "unknown") continue;
         let unknown_literals = clause.literals.filter(literal => !(literal.identifier in model));
         if (unknown_literals.length === 1) {
@@ -25,19 +20,20 @@ export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): G
     let literals = cnf.literals;
 
     let  unitProp = false;
+    let cnf_result : CNFResult;
     do {
-        let cnf_result = cnf.evaluate(model);
+        cnf_result = cnf.evaluate(model);
         yield {
-            result: cnf_result,
+            cnf_result: cnf_result,
             model: {...model},
             unit_prop: unitProp
         };
-        if (Object.keys(model).length == literals.length || cnf_result !== "unknown") {
+        if (Object.keys(model).length == literals.length || cnf_result.result !== "unknown") {
             return;
         }
         if (!useUnitProp) break;
         unitProp = true;
-    } while(unitPropagation(cnf, model));
+    } while(unitPropagation(cnf_result, model));
     
     let model1 = {...model};
     let model2 = {...model};
@@ -54,12 +50,12 @@ export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): G
     model1[next_literal] = false;
     let dpll_result = dpll(cnf, useUnitProp, model1);
 
-    let last_result: Eval = "unknown";
+    let last_result: DpllResult | null = null;
     for (let result of dpll_result) {
-        last_result = result.result;
+        last_result = result;
         yield result;
     }
-    if (last_result === "sat") return;
+    if (last_result && last_result.cnf_result.result === "sat") return;
 
     model2[next_literal] = true;
     dpll_result = dpll(cnf, useUnitProp, model2);

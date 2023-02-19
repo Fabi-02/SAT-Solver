@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { Clause } from '@/ts/formula';
 import { ref, reactive, nextTick } from 'vue'
+import { Eval } from '../d3/types';
 
 const props = defineProps({
     formula: { type: String, required: true }
@@ -11,7 +13,7 @@ const emit = defineEmits<{
 
 const refs = ref<HTMLInputElement[]>([]);
 
-const formulas = reactive([{ text: '', raw: '', valid: false }]);
+const formulas = reactive([{ text: '', raw: '', valid: false, result: "unknown" as Eval }]);
 insertFormulas(props.formula);
 
 function validateFormula(formula: string): boolean {
@@ -70,7 +72,7 @@ function insertFormulas(text: string, focussed: boolean=false,index: number=0, s
                 focus = index + i;
             }
         }
-        nextFormula = { text: '', raw: '', valid: false };
+        nextFormula = { text: '', raw: '', valid: false, result: "unknown" as Eval };
     }
     return [focus, cursorPos];
 }
@@ -102,7 +104,7 @@ async function keyDown(event: KeyboardEvent, index: number) {
         formula.text = currentString;
         formula.raw = formula.text;
         formula.valid = validateFormula(formula.raw)
-        formulas.splice(index + 1, 0, { text: '', raw: nextString, valid: validateFormula(nextString) })
+        formulas.splice(index + 1, 0, { text: '', raw: nextString, valid: validateFormula(nextString), result: "unknown" as Eval })
         focus = index + 1;
         cursorPos = 0;
         update();
@@ -183,6 +185,20 @@ function update() {
 
     emit("update:formula", formulaStr);
 }
+
+function updateResult(results: { clause: Clause; result: Eval; }[]) {
+    if (formulas.length !== results.length) {
+        for (let i = 0; i < formulas.length; i++) {
+            formulas[i].result = "unknown";
+        }
+        return;
+    }
+    for (let i = 0; i < formulas.length; i++) {
+        formulas[i].result = results[i].result;
+    }
+}
+
+defineExpose({ updateResult: updateResult });
 </script>
 
 <template>
@@ -192,7 +208,7 @@ function update() {
             <span class="w-5" v-else></span>
             <input type="text" :name="'formula-' + index" autocomplete="off"
                 class="block overflow-ellipsis w-full py-1 px-4 mb-1 mx-1 leading-tight text-input"
-                :class="{ 'bg-red-100 border-red-600 border-2': !item.valid }" v-model="item.text"
+                :class="{ 'bg-red-100 border-red-600 border-2': !item.valid, 'bg-green-100': item.result === 'sat', 'bg-red-100': item.result === 'unsat' }" v-model="item.text"
                 @focusin="focusInput(index, true)"
                 @input="input(index)" @keydown="keyDown($event, index)"
                 @focusout="focusInput(index, false)" ref="refs" />

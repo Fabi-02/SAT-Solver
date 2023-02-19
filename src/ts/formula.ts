@@ -1,4 +1,4 @@
-import { Eval, Model } from "@/components/d3/types";
+import { CNFResult, Eval, Model } from "@/components/d3/types";
 
 export const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
@@ -25,21 +25,31 @@ export class CNF {
         this.literals.sort(collator.compare);
     }
 
-    evaluate(model: Model): Eval {
+    evaluate(model: Model): CNFResult {
+        let is_unsat = false;
         let is_unknown = false;
+        let results: {
+            clause: Clause;
+            result: Eval;
+        }[] = [];
+
         for (let clause of this.clauses) {
             let result = clause.evaluate(model);
+            results.push({
+                clause: clause,
+                result: result
+            })
             if (result === "unsat") {
-                return result;
+                is_unsat = true;
             }
             if (result === "unknown") {
                 is_unknown = true;
             }
         }
-        if (is_unknown) {
-            return "unknown";
+        return {
+            result: is_unsat ? "unsat" : is_unknown ? "unknown" : "sat",
+            results: results
         }
-        return "sat";
     }
 }
 

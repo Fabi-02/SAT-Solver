@@ -3,8 +3,8 @@ import ContentPage from '@components/ContentPage.vue'
 import D3Tree from '@/components/d3/D3Tree.vue'
 import { ref } from 'vue';
 import { CNF, collator } from '@ts/formula';
-import { DpllResult, dpll } from '@/ts/dpll';
-import { Model, TreeNode } from '@/components/d3/types';
+import { dpll } from '@/ts/dpll';
+import { DpllResult, Model, TreeNode } from '@/components/d3/types';
 import { nQueensFormula } from '@/ts/nqueens';
 import D3NQueens from '@/components/d3/D3NQueens.vue';
 
@@ -101,7 +101,7 @@ function addDataSet(result: DpllResult) {
     while (next = nextLiteral(d, model)) {
         d = next;
         d.pathId = pathId;
-        if (result.result === "sat") {
+        if (result.cnf_result.result === "sat") {
             d.sat_path = true;
         }
     }
@@ -120,9 +120,9 @@ function addDataSet(result: DpllResult) {
             name: name,
             key: key,
             neg: !model[key],
-            result: result.result,
+            result: result.cnf_result.result,
             unit_prop: result.unit_prop,
-            sat_path: result.result === "sat" ? true : false,
+            sat_path: result.cnf_result.result === "sat" ? true : false,
             children: []
         }
         if (model[key]) {

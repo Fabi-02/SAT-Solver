@@ -4,8 +4,8 @@ import FormulaInput from '@components/formula/FormulaInput.vue'
 import D3Tree from '@/components/d3/D3Tree.vue'
 import { ref } from 'vue';
 import { CNF, collator } from '@ts/formula';
-import { DpllResult, dpll } from '@/ts/dpll';
-import { Model, TreeNode } from '@/components/d3/types';
+import { dpll } from '@/ts/dpll';
+import { DpllResult, Model, TreeNode } from '@/components/d3/types';
 
 const formulaString = ref(`2 3 4 -5
 1 5 -6
@@ -19,6 +19,7 @@ const formulaString = ref(`2 3 4 -5
 const useUnitProp = ref(true);
 
 const d3Tree = ref();
+const formulaInput = ref();
 
 var id = 0;
 var pathId = 0;
@@ -104,7 +105,7 @@ function addDataSet(result: DpllResult) {
     while (next = nextLiteral(d, model)) {
         d = next;
         d.pathId = pathId;
-        if (result.result === "sat") {
+        if (result.cnf_result.result === "sat") {
             d.sat_path = true;
         }
     }
@@ -123,9 +124,9 @@ function addDataSet(result: DpllResult) {
             name: name,
             key: key,
             neg: !model[key],
-            result: result.result,
+            result: result.cnf_result.result,
             unit_prop: result.unit_prop,
-            sat_path: result.result === "sat" ? true : false,
+            sat_path: result.cnf_result.result === "sat" ? true : false,
             children: []
         }
         if (model[key]) {
@@ -135,6 +136,7 @@ function addDataSet(result: DpllResult) {
         }
         d = newChild;
         d3Tree.value.update(data, pathId);
+        formulaInput.value.updateResult(result.cnf_result.results);
     }
 }
 
@@ -153,7 +155,7 @@ function addDataSet(result: DpllResult) {
                     <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
                     <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>
                 </div>
-                <FormulaInput v-model:formula="formulaString" class="h-full"/>
+                <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full"/>
             </div>
             <div class="relative w-full">
                 <D3Tree ref="d3Tree" />
