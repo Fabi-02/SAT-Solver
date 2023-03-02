@@ -6,9 +6,11 @@ import { CNF, collator } from '@ts/formula';
 import { dpll } from '@/ts/dpll';
 import { DpllResult, Model, TreeNode } from '@/components/d3/types';
 import D3Sudoku from '@/components/d3/D3Sudoku.vue';
+import { sudokuFormula } from '@/ts/sudoku';
 
-// const formulaString = nQueensFormula(N.value);
-const formulaString = "a b c\nd";
+const N = ref(2);
+
+const formulaString = sudokuFormula(N.value);
 
 const useUnitProp = ref(true);
 
@@ -106,7 +108,7 @@ function addDataSet(result: DpllResult) {
 
     let keys = Object.keys(model).sort(collator.compare);
     for (let key of keys) {
-        let name = `(${key.replace("_", ", ")})`;
+        let name = `(${key.replace("_", ", ").replace("_", ") ")}`;
         if (model[key]) {
             name = name + "=T";
         } else {
@@ -130,7 +132,7 @@ function addDataSet(result: DpllResult) {
         }
         d = newChild;
         d3Tree.value.update(data, pathId);
-        // d3NQueens.value.update(result.model);
+        d3Sudoku.value.update(result.model);
     }
 }
 </script>
@@ -149,11 +151,11 @@ function addDataSet(result: DpllResult) {
                     <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>
                 </div>
                 <div class="relative w-full h-full">
-                    <D3Sudoku ref="d3Sudoku"/>
+                    <D3Sudoku ref="d3Sudoku" :N="N"/>
                 </div>
             </div>
             <div class="relative w-full">
-                <D3Tree ref="d3Tree" :node-size-x="80"/>
+                <D3Tree ref="d3Tree" :node-size-x="100"/>
             </div>
         </div>
     </ContentPage>
