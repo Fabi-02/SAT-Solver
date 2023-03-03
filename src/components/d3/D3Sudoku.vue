@@ -13,6 +13,8 @@ const height = 450;
 
 const padding = 2;
 
+const numberFactor = 0.7;
+
 const boardWidth = width - padding * 2;
 const boardHeight = height - padding * 2;
 
@@ -85,8 +87,6 @@ function update(model: Model) {
         });
     }
 
-    console.log(data);
-
     boardGroup.selectAll(".sudoku-board > .number")
         .data(data)
         .join(
@@ -100,7 +100,7 @@ function update(model: Model) {
                     .attr("text-anchor", "middle")
                     .attr("alignment-baseline", "central")
                     .attr("fill", "black")
-                    .attr("font-size", "50")
+                    .attr("font-size", numberFactor * boardHeight / (props.N * props.N))
                     .text(d => d.number);
 
                 numberEnter.attr("opacity", 0)

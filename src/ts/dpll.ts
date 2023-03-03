@@ -20,7 +20,7 @@ export function* dpll(cnf: CNF, useUnitProp: boolean=true, model: Model = {}): G
     let literals = cnf.literals;
 
     let  unitProp = false;
-    let cnf_result : CNFResult;
+    let cnf_result: CNFResult;
     do {
         cnf_result = cnf.evaluate(model);
         yield {

@@ -42,7 +42,7 @@ export function sudokuFormula(N: number): string {
             for (let c = 0; c < NN; c++) {
                 literals.push(varmap(r, c, n));
             }
-            formulas += atlOne(literals);
+            formulas += extOne(literals);
         }
 
         // number in col
@@ -51,7 +51,7 @@ export function sudokuFormula(N: number): string {
             for (let r = 0; r < NN; r++) {
                 literals.push(varmap(r, c, n));
             }
-            formulas += atlOne(literals);
+            formulas += extOne(literals);
         }
 
         // number in subgrid
@@ -63,7 +63,7 @@ export function sudokuFormula(N: number): string {
                         literals.push(varmap((r * N) + sr, (c * N) + sc, n));
                     }
                 }
-                formulas += atlOne(literals);
+                formulas += extOne(literals);
             }
         }
     }
