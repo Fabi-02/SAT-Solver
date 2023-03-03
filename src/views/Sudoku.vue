@@ -43,7 +43,7 @@ function get_dpll_gen() {
 
         let cnf = new CNF(formulaString);
 
-        dpll_gen = dpll(cnf, useUnitProp.value)
+        dpll_gen = dpll(cnf, useUnitProp.value, {"1_1_1": true, "2_2_2": true, "3_3_3": true, "4_4_4": true})
     }
     return dpll_gen;
 }

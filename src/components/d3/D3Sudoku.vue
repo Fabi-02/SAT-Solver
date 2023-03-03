@@ -67,6 +67,11 @@ onMounted(() => {
         .attr("class", "sudoku-board");
 });
 
+function posFromNumber(number: number): [number, number] {
+    number -= 1;
+    return [number % props.N, Math.floor(number / props.N)];
+}
+
 function update(model: Model) {
     let data: {
         id: string,
@@ -87,32 +92,63 @@ function update(model: Model) {
         });
     }
 
-    boardGroup.selectAll(".sudoku-board > .number")
+    // boardGroup.selectAll(".sudoku-board > .number")
+    //     .data(data)
+    //     .join(
+    //         enter => {
+    //             let numberEnter = enter.append("text")
+    //                 .attr("class", "number")
+    //                 .attr("x", d => padding + (d.col - 1) * boardWidth / (props.N * props.N))
+    //                 .attr("y", d => padding + (d.row - 1) * boardHeight / (props.N * props.N))
+    //                 .attr("dx", boardHeight / (props.N * props.N) / 2)
+    //                 .attr("dy", boardHeight / (props.N * props.N) / 2)
+    //                 .attr("text-anchor", "middle")
+    //                 .attr("alignment-baseline", "central")
+    //                 .attr("fill", "black")
+    //                 .attr("font-size", numberFactor * boardHeight / (props.N * props.N))
+    //                 .text(d => d.number);
+
+    //             numberEnter.attr("opacity", 0)
+    //                 .transition()
+    //                 .duration(animationDuration)
+    //                 .attr("opacity", d => d.value ? 1 : 0);
+
+    //             return numberEnter;
+    //         },
+    //         update => update.transition()
+    //             .duration(animationDuration)
+    //             .attr("opacity", d => d.value ? 1 : 0)
+    //     );
+
+    boardGroup.selectAll(".sudoku-board > .small-number")
         .data(data)
         .join(
             enter => {
                 let numberEnter = enter.append("text")
-                    .attr("class", "number")
+                    .attr("class", "small-number")
                     .attr("x", d => padding + (d.col - 1) * boardWidth / (props.N * props.N))
                     .attr("y", d => padding + (d.row - 1) * boardHeight / (props.N * props.N))
-                    .attr("dx", boardHeight / (props.N * props.N) / 2)
-                    .attr("dy", boardHeight / (props.N * props.N) / 2)
+                    .attr("dx", d => boardHeight / (props.N * props.N * props.N) * (posFromNumber(d.number)[0] + 0.5))
+                    .attr("dy", d => boardHeight / (props.N * props.N * props.N) * (posFromNumber(d.number)[1] + 0.5))
                     .attr("text-anchor", "middle")
                     .attr("alignment-baseline", "central")
-                    .attr("fill", "black")
-                    .attr("font-size", numberFactor * boardHeight / (props.N * props.N))
+                    .attr("font-size", boardHeight / (props.N * props.N * props.N))
                     .text(d => d.number);
 
-                numberEnter.attr("opacity", 0)
+                numberEnter.attr("fill", d => d.value ? "black" : "red")
+                    .attr("font-weight", d => d.value ? "bold" : "normal")
+                    .attr("opacity", 0)
                     .transition()
                     .duration(animationDuration)
-                    .attr("opacity", d => d.value ? 1 : 0);
+                    .attr("opacity", d => d.value ? 1 : 0.2);
 
                 return numberEnter;
             },
             update => update.transition()
                 .duration(animationDuration)
-                .attr("opacity", d => d.value ? 1 : 0)
+                .attr("opacity", d => d.value ? 1 : 0.2)
+                .attr("font-weight", d => d.value ? "bold" : "normal")
+                .attr("fill", d => d.value ? "black" : "red")
         );
 }
 
