@@ -1,32 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StartPage from '@views/StartPage.vue'
+import Solver from '@views/Solver.vue'
+import NQueen from '@views/NQueen.vue'
+import Sudoku from '@views/Sudoku.vue'
 
 const routes = [
-  {
-    path: '/',
-    name: 'Startseite',
-    component: StartPage
-  },
-  {
-    path: '/solver',
-    name: 'Solver',
-    component: () => import('@/views/Solver.vue')
-  },
-  {
-    path: '/n-queen',
-    name: 'N-Danem Problem',
-    component: () => import('@views/NQueen.vue')
-  },
-  {
-    path: '/sudoku',
-    name: 'Sudoku',
-    component: () => import('@views/Sudoku.vue')
-  }
+    {
+        path: '/',
+        component: StartPage
+    },
+    {
+        path: '/solver',
+        component: Solver
+    },
+    {
+        path: '/n-queen',
+        component: NQueen
+    },
+    {
+        path: '/sudoku',
+        component: Sudoku
+    }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+    history: createWebHistory(),
+    routes
 })
 
 export default router
