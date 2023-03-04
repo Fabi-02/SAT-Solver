@@ -2,22 +2,33 @@
 import ContentPage from '@components/ContentPage.vue'
 import D3Tree from '@/components/d3/D3Tree.vue'
 import { ref } from 'vue';
-import { DpllResult, TreeNode } from '@/components/d3/types';
+import { DpllResult, Model, TreeNode } from '@/components/d3/types';
 import D3Sudoku from '@/components/d3/D3Sudoku.vue';
 import { sudokuFormula } from '@/ts/sudoku';
 import SolverControl from '@/components/control/SolverControl.vue';
 
 const N = ref(2);
 
+const verbose = ref(true);
+
 const formulaString = sudokuFormula(N.value);
 
 const d3Tree = ref();
 const d3Sudoku = ref();
 
-function update(data: TreeNode, pathId: number, result: DpllResult | undefined) {
+var model: Model;
+
+function update(data: TreeNode, pathId: number, result: DpllResult | undefined): void {
     d3Tree.value.update(data, pathId);
     if (result !== undefined) {
-        d3Sudoku.value.update(result.model);
+        model = result.model;
+        d3Sudoku.value.update(model);
+    }
+}
+
+function updateVerbose() {
+    if (model !== undefined) {
+        d3Sudoku.value.update(model);
     }
 }
 </script>
@@ -27,8 +38,13 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined) 
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
                 <SolverControl v-model:formula="formulaString" :update="update" />
+                <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
+                    <input type="checkbox" class="sr-only peer" v-model="verbose" @change="updateVerbose">
+                    <div class="checkbox-switch"></div>
+                    <span class="ml-3 text-sm font-medium text-gray-900">Verbose Modus</span>
+                </label>
                 <div class="relative w-full h-full">
-                    <D3Sudoku ref="d3Sudoku" :N="N" />
+                    <D3Sudoku ref="d3Sudoku" :N="N" v-model:verbose="verbose" />
                 </div>
             </div>
             <div class="relative w-full">

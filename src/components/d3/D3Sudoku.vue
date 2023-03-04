@@ -5,7 +5,8 @@ import { onMounted } from "vue";
 import { Model } from "./types";
 
 const props = defineProps({
-    N: { type: Number, required: true }
+    N: { type: Number, required: true },
+    verbose: { type: Boolean, required: true }
 });
 
 const width = 450;
@@ -92,36 +93,36 @@ function update(model: Model) {
         });
     }
 
-    // boardGroup.selectAll(".sudoku-board > .number")
-    //     .data(data)
-    //     .join(
-    //         enter => {
-    //             let numberEnter = enter.append("text")
-    //                 .attr("class", "number")
-    //                 .attr("x", d => padding + (d.col - 1) * boardWidth / (props.N * props.N))
-    //                 .attr("y", d => padding + (d.row - 1) * boardHeight / (props.N * props.N))
-    //                 .attr("dx", boardHeight / (props.N * props.N) / 2)
-    //                 .attr("dy", boardHeight / (props.N * props.N) / 2)
-    //                 .attr("text-anchor", "middle")
-    //                 .attr("alignment-baseline", "central")
-    //                 .attr("fill", "black")
-    //                 .attr("font-size", numberFactor * boardHeight / (props.N * props.N))
-    //                 .text(d => d.number);
+    boardGroup.selectAll(".sudoku-board > .number")
+        .data(props.verbose ? [] : data)
+        .join(
+            enter => {
+                let numberEnter = enter.append("text")
+                    .attr("class", "number")
+                    .attr("x", d => padding + (d.col - 1) * boardWidth / (props.N * props.N))
+                    .attr("y", d => padding + (d.row - 1) * boardHeight / (props.N * props.N))
+                    .attr("dx", boardHeight / (props.N * props.N) / 2)
+                    .attr("dy", boardHeight / (props.N * props.N) / 2)
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "central")
+                    .attr("fill", "black")
+                    .attr("font-size", numberFactor * boardHeight / (props.N * props.N))
+                    .text(d => d.number);
 
-    //             numberEnter.attr("opacity", 0)
-    //                 .transition()
-    //                 .duration(animationDuration)
-    //                 .attr("opacity", d => d.value ? 1 : 0);
+                numberEnter.attr("opacity", 0)
+                    .transition()
+                    .duration(animationDuration)
+                    .attr("opacity", d => d.value ? 1 : 0);
 
-    //             return numberEnter;
-    //         },
-    //         update => update.transition()
-    //             .duration(animationDuration)
-    //             .attr("opacity", d => d.value ? 1 : 0)
-    //     );
+                return numberEnter;
+            },
+            update => update.transition()
+                .duration(animationDuration)
+                .attr("opacity", d => d.value ? 1 : 0)
+        );
 
     boardGroup.selectAll(".sudoku-board > .small-number")
-        .data(data)
+        .data(props.verbose ? data : [])
         .join(
             enter => {
                 let numberEnter = enter.append("text")
