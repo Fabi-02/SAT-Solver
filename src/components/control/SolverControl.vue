@@ -19,21 +19,29 @@ const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout
 
 var dpll_gen: Generator<DpllResult> | null = null;
 
+var auto: boolean = false;
+var stopAuto: boolean = false;
+
+function resetData() {
+    id = 0;
+    pathId = 0;
+
+    data = {
+        id: id++,
+        pathId: pathId,
+        name: "",
+        key: "",
+        neg: false,
+        result: "unknown",
+        unit_prop: false,
+        sat_path: false,
+        children: []
+    };
+}
+
 function get_dpll_gen() {
     if (dpll_gen === null) {
-        id = 0;
-        pathId = 0;
-        data = {
-            id: id++,
-            pathId: pathId,
-            name: "",
-            key: "",
-            neg: false,
-            result: "unknown",
-            unit_prop: false,
-            sat_path: false,
-            children: []
-        };
+        resetData();
 
         let cnf = new CNF(props.formula);
 
@@ -47,21 +55,39 @@ function reset_dpll_gen() {
 }
 
 async function autoSolve() {
+    if (auto) return;
+    auto = true;
     let dpll_gen = get_dpll_gen();
-    for (let result of dpll_gen) {
-        // console.log(result);
-        addDataSet(result);
+    while (auto) {
+        if (stopAuto) {
+            stopAuto = false;
+            auto = false;
+            return;
+        }
+        
+        let next = dpll_gen.next();
+        if (!next.done) {
+            addDataSet(next.value);
+        } else {
+            stopAuto = false;
+            auto = false;
+            break;
+        }
         await timer(250);
     }
     pathId = 0;
     props.update(data, pathId);
-    console.log(data);
     reset_dpll_gen();
 }
 
+function stopAutoSolve() {
+    stopAuto = true;
+}
+
 function nextStep() {
+    if (auto) return;
     let dpll_gen = get_dpll_gen();
-    let next = dpll_gen.next()
+    let next = dpll_gen.next();
     if (next.done) {
         reset_dpll_gen();
         pathId = 0;
@@ -69,6 +95,14 @@ function nextStep() {
     } else {
         addDataSet(next.value);
     }
+}
+
+function reset() {
+    auto = false;
+    stopAuto = false;
+    reset_dpll_gen();
+    resetData();
+    props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: {}, unit_prop: false});
 }
 
 function nextLiteral(data: TreeNode, model: Model): TreeNode | null {
@@ -138,7 +172,11 @@ function addDataSet(result: DpllResult) {
         <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
     </label>
     <div class="w-full flex flex-row">
-        <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
         <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>
+        <button @click="reset" class="w-full border mx-1 mb-3">Reset</button>
+    </div>
+    <div class="w-full flex flex-row">
+        <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
+        <button @click="stopAutoSolve" class="w-full border mx-1 mb-3">Stop</button>
     </div>
 </template>
