@@ -81,6 +81,7 @@ async function autoSolve() {
 }
 
 function stopAutoSolve() {
+    if (!auto) return;
     stopAuto = true;
 }
 
