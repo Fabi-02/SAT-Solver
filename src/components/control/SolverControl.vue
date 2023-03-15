@@ -19,10 +19,14 @@ const timer: (ms: number) => Promise<null> = ms => new Promise(res => setTimeout
 
 var dpll_gen: Generator<DpllResult> | null = null;
 
-var auto: boolean = false;
-var stopAuto: boolean = false;
+var finished = ref(false);
+var started = ref(false);
+var auto = ref(false);
+var pauseAuto: boolean = false;
 
 function resetData() {
+    finished.value = false;
+    started.value = false;
     id = 0;
     pathId = 0;
 
@@ -55,13 +59,14 @@ function reset_dpll_gen() {
 }
 
 async function autoSolve() {
-    if (auto) return;
-    auto = true;
+    if (auto.value) return;
     let dpll_gen = get_dpll_gen();
-    while (auto) {
-        if (stopAuto) {
-            stopAuto = false;
-            auto = false;
+    auto.value = true;
+    started.value = true;
+    while (auto.value) {
+        if (pauseAuto) {
+            pauseAuto = false;
+            auto.value = false;
             return;
         }
         
@@ -69,8 +74,9 @@ async function autoSolve() {
         if (!next.done) {
             addDataSet(next.value);
         } else {
-            stopAuto = false;
-            auto = false;
+            finished.value = true;
+            pauseAuto = false;
+            auto.value = false;
             break;
         }
         await timer(250);
@@ -80,16 +86,18 @@ async function autoSolve() {
     reset_dpll_gen();
 }
 
-function stopAutoSolve() {
-    if (!auto) return;
-    stopAuto = true;
+function pauseAutoSolve() {
+    if (!auto.value) return;
+    pauseAuto = true;
 }
 
 function nextStep() {
-    if (auto) return;
+    if (auto.value) return;
+    started.value = true;
     let dpll_gen = get_dpll_gen();
     let next = dpll_gen.next();
     if (next.done) {
+        finished.value = true;
         reset_dpll_gen();
         pathId = 0;
         props.update(data, pathId);
@@ -99,8 +107,8 @@ function nextStep() {
 }
 
 function reset() {
-    auto = false;
-    stopAuto = false;
+    auto.value = false;
+    pauseAuto = false;
     reset_dpll_gen();
     resetData();
     props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: {}, unit_prop: false});
@@ -173,11 +181,11 @@ function addDataSet(result: DpllResult) {
         <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
     </label>
     <div class="w-full flex flex-row">
-        <button @click="nextStep" class="w-full border mx-1 mb-3">Step</button>
-        <button @click="reset" class="w-full border mx-1 mb-3">Reset</button>
+        <button @click="nextStep" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="auto || finished">Step</button>
+        <button @click="reset" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="!started">Reset</button>
     </div>
     <div class="w-full flex flex-row">
-        <button @click="autoSolve" class="w-full border mx-1 mb-3">Auto</button>
-        <button @click="stopAutoSolve" class="w-full border mx-1 mb-3">Stop</button>
+        <button @click="autoSolve" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="auto || finished">Auto</button>
+        <button @click="pauseAutoSolve" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="!auto || finished">Pause</button>
     </div>
 </template>
