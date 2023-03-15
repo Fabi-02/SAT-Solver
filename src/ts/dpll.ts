@@ -1,4 +1,4 @@
-import { CNFResult, DpllResult, Eval, Model } from "@/components/d3/types";
+import { CNFResult, DpllResult, Eval, Model } from "@components/d3/types";
 import { CNF } from "@ts/formula";
 
 function unitPropagation(cnf: CNFResult, model: Model): boolean {

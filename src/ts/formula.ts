@@ -1,4 +1,4 @@
-import { CNFResult, Eval, Model } from "@/components/d3/types";
+import { CNFResult, Eval, Model } from "@components/d3/types";
 
 export const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 

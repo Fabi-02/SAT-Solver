@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import ContentPage from '@components/ContentPage.vue'
 import FormulaInput from '@components/formula/FormulaInput.vue'
-import D3Tree from '@/components/d3/D3Tree.vue'
+import D3Tree from '@components/d3/D3Tree.vue'
 import { ref } from 'vue';
-import { DpllResult, TreeNode } from '@/components/d3/types';
-import SolverControl from '@/components/control/SolverControl.vue';
+import { DpllResult, TreeNode } from '@components/d3/types';
+import SolverControl from '@components/control/SolverControl.vue';
 
 const formulaString = ref(`2 3 4 -5
 1 5 -6

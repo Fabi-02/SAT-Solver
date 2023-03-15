@@ -14,7 +14,6 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@ts/*": ["./src/ts/*"],
       "@views/*": ["./src/views/*"],

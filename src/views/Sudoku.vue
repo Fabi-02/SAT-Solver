@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import ContentPage from '@components/ContentPage.vue'
-import D3Tree from '@/components/d3/D3Tree.vue'
+import D3Tree from '@components/d3/D3Tree.vue'
 import { ref } from 'vue';
-import { DpllResult, Model, TreeNode } from '@/components/d3/types';
-import D3Sudoku from '@/components/d3/D3Sudoku.vue';
-import { sudokuFormula } from '@/ts/sudoku';
-import SolverControl from '@/components/control/SolverControl.vue';
+import { DpllResult, Model, TreeNode } from '@components/d3/types';
+import D3Sudoku from '@components/d3/D3Sudoku.vue';
+import { sudokuFormula } from '@ts/sudoku';
+import SolverControl from '@components/control/SolverControl.vue';
 
 const N = ref(2);
 

@@ -1,4 +1,4 @@
-import { Clause } from "@/ts/formula";
+import { Clause } from "@ts/formula";
 
 export type Eval = "sat" | "unsat" | "unknown";
 

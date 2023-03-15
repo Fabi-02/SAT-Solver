@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Clause } from '@/ts/formula';
+import { Clause } from '@ts/formula';
 import { ref, reactive, nextTick } from 'vue'
 import { Eval } from '../d3/types';
 

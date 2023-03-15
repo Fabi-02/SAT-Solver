@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { DpllResult, Model, TreeNode } from '../d3/types';
-import { CNF, collator } from '@/ts/formula';
-import { dpll } from '@/ts/dpll';
+import { CNF, collator } from '@ts/formula';
+import { dpll } from '@ts/dpll';
 
 const props = defineProps({
     formula: { type: String, required: true },

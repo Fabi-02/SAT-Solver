@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import ContentPage from '@components/ContentPage.vue'
-import D3Tree from '@/components/d3/D3Tree.vue'
+import D3Tree from '@components/d3/D3Tree.vue'
 import { ref } from 'vue';
-import { DpllResult, TreeNode } from '@/components/d3/types';
-import { nQueensFormula } from '@/ts/nqueens';
-import D3NQueens from '@/components/d3/D3NQueens.vue';
-import SolverControl from '@/components/control/SolverControl.vue';
+import { DpllResult, TreeNode } from '@components/d3/types';
+import { nQueensFormula } from '@ts/nqueens';
+import D3NQueens from '@components/d3/D3NQueens.vue';
+import SolverControl from '@components/control/SolverControl.vue';
 
 const N = ref(4);
 

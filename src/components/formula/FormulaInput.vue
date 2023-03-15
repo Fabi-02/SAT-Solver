@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Clause } from "@/ts/formula";
+import { Clause } from "@ts/formula";
 import ModernInput from "@components/formula/ModernInput.vue"
 import TextFieldInput from "@components/formula/TextFieldInput.vue"
 import { ref } from "vue";
