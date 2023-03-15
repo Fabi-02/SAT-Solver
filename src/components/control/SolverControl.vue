@@ -181,11 +181,11 @@ function addDataSet(result: DpllResult) {
         <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
     </label>
     <div class="w-full flex flex-row">
-        <button @click="nextStep" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="auto || finished">Step</button>
-        <button @click="reset" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="!started">Reset</button>
+        <button @click="nextStep" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Step</button>
+        <button @click="reset" class="control-button w-full mx-1 mb-3" :disabled="!started">Reset</button>
     </div>
     <div class="w-full flex flex-row">
-        <button @click="autoSolve" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="auto || finished">Auto</button>
-        <button @click="pauseAutoSolve" class="w-full border mx-1 mb-3 disabled:text-gray-500" :disabled="!auto || finished">Pause</button>
+        <button @click="autoSolve" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Auto</button>
+        <button @click="pauseAutoSolve" class="control-button w-full mx-1 mb-3" :disabled="!auto || finished">Pause</button>
     </div>
 </template>
