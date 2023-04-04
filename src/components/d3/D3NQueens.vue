@@ -27,6 +27,11 @@ type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var boardGroup: GroupSelection;
 
 onMounted(() => {
+    updateN();
+});
+
+function updateN() {
+    d3.selectAll("#d3-nqueens > svg").remove()
     const svg = d3.select("#d3-nqueens").insert("svg")
         .attr("height", "100%")
         .attr("width", "100%")
@@ -48,7 +53,7 @@ onMounted(() => {
 
     boardGroup = svg.insert("g")
         .attr("class", "chess-board");
-});
+};
 
 function update(model: Model) {
     let data: {
@@ -98,7 +103,7 @@ function update(model: Model) {
         );
 }
 
-defineExpose({ update: update });
+defineExpose({ update: update, updateN: updateN });
 </script>
 
 <template>
