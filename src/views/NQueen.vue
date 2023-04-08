@@ -34,7 +34,7 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined) 
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
                 <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
-                <input id="default-range" type="range" v-model.number="N" @input="updateN" min="1" max="6" class="w-full h-2 mb-4 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50" :disabled="solverControl.started || solverControl.finished">
+                <input id="default-range" type="range" v-model.number="N" @input="updateN" min="1" max="6" class="w-full h-2 mb-4 bg-gray-200 rounded-lg appearance-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50" :disabled="solverControl && (solverControl.started || solverControl.finished)">
                 <div class="relative w-full h-full">
                     <D3NQueens ref="d3NQueens" :N="N" />
                 </div>
