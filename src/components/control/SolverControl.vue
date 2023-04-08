@@ -183,9 +183,9 @@ function addDataSet(result: DpllResult) {
         <button @click="autoSolve" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Auto</button>
         <button @click="pauseAutoSolve" class="control-button w-full mx-1 mb-3" :disabled="!auto || finished">Pause</button>
     </div>
-    <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
-        <input type="checkbox" class="sr-only peer" v-model="useUnitProp">
-        <div class="checkbox-switch"></div>
-        <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
+    <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
+        <input type="checkbox" class="sr-only peer" v-model="useUnitProp" :disabled="started || finished">
+        <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
+        <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Unit Propagation</span>
     </label>
 </template>
