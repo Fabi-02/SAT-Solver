@@ -16,7 +16,7 @@ import MenuItem from './MenuItem.vue'
         <div class="ml-6 flex items-baseline space-x-4">
             <MenuItem to="/"><font-awesome-icon icon="fa-solid fa-house" /> Startseite</MenuItem>
             <MenuItem to="/solver"><font-awesome-icon icon="fa-solid fa-gears" /> Solver</MenuItem>
-            <MenuItem to="/n-queen"><font-awesome-icon icon="fa-solid fa-chess-queen" /> N-Damen</MenuItem>
+            <MenuItem to="/n-queens"><font-awesome-icon icon="fa-solid fa-chess-queen" /> N-Damen</MenuItem>
             <MenuItem to="/sudoku"><font-awesome-icon icon="fa-solid fa-border-all" /> Sudoku</MenuItem>
         </div>
     </nav>

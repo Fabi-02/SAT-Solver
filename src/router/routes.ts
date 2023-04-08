@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StartPage from '@views/StartPage.vue'
 import Solver from '@views/Solver.vue'
-import NQueen from '@views/NQueen.vue'
+import NQueens from '@views/NQueens.vue'
 import Sudoku from '@views/Sudoku.vue'
 
 const routes = [
@@ -14,8 +14,8 @@ const routes = [
         component: Solver
     },
     {
-        path: '/n-queen',
-        component: NQueen
+        path: '/n-queens',
+        component: NQueens
     },
     {
         path: '/sudoku',
