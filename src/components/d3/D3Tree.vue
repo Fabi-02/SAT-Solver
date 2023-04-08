@@ -85,7 +85,9 @@ onMounted(() => {
         .attr("class", "tree");
 
     zoom = d3.zoom().on("zoom", function (e) {
-        mousemove(e.sourceEvent as MouseEvent);
+        if (e.sourceEvent !== null) {
+            mousemove(e.sourceEvent as MouseEvent);
+        }
         group.attr("transform", e.transform);
     });
 
@@ -253,12 +255,20 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
     )
 }
 
+function resetZoom() {
+    d3.select('#d3-tree > svg')
+        .transition()
+        .duration(animationDuration / 2)
+        .call(zoom!.transform as any, d3.zoomIdentity);
+}
+
 defineExpose({ update: update });
 </script>
 
 
 <template>
     <div id="d3-tree" class="select-none"></div>
+    <font-awesome-icon icon="fa-solid fa-location-crosshairs" class="absolute left-3 top-3 text-gray-500 text-2xl cursor-pointer" @click="resetZoom" />
 </template>
 
 
@@ -284,6 +294,7 @@ defineExpose({ update: update });
 }
 
 #d3-tree > svg {
+    @apply rounded-xl border-4 border-gray-200;
     position: absolute;
 }
 </style>
