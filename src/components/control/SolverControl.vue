@@ -172,6 +172,11 @@ function addDataSet(result: DpllResult) {
     }
 }
 
+defineExpose({
+    started,
+    finished
+});
+
 </script>
 
 <template>

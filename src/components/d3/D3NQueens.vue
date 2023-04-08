@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import * as d3 from "d3"
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { Model } from "./types";
 
 const props = defineProps({
