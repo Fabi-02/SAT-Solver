@@ -175,11 +175,6 @@ function addDataSet(result: DpllResult) {
 </script>
 
 <template>
-    <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
-        <input type="checkbox" class="sr-only peer" v-model="useUnitProp">
-        <div class="checkbox-switch"></div>
-        <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
-    </label>
     <div class="w-full flex flex-row">
         <button @click="nextStep" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Step</button>
         <button @click="reset" class="control-button w-full mx-1 mb-3" :disabled="!started">Reset</button>
@@ -188,4 +183,9 @@ function addDataSet(result: DpllResult) {
         <button @click="autoSolve" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Auto</button>
         <button @click="pauseAutoSolve" class="control-button w-full mx-1 mb-3" :disabled="!auto || finished">Pause</button>
     </div>
+    <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
+        <input type="checkbox" class="sr-only peer" v-model="useUnitProp">
+        <div class="checkbox-switch"></div>
+        <span class="ml-3 text-sm font-medium text-gray-900">Unit Propagation</span>
+    </label>
 </template>

@@ -32,8 +32,8 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined) 
     <ContentPage name="N-Damen Problem">
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
-                <input id="default-range" type="range" v-model.number="N" @input="updateN" min="1" max="6" class="w-full h-2 mb-4 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 <SolverControl v-model:formula="formulaString" :update="update" />
+                <input id="default-range" type="range" v-model.number="N" @input="updateN" min="1" max="6" class="w-full h-2 mb-4 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 <div class="relative w-full h-full">
                     <D3NQueens ref="d3NQueens" :N="N" />
                 </div>
