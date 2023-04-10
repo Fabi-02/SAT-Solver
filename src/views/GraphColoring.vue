@@ -6,10 +6,23 @@ import { DpllResult, Model, TreeNode } from '@components/d3/types';
 import { sudokuFormula } from '@ts/sudoku';
 import SolverControl from '@components/control/SolverControl.vue';
 import D3GraphColoring from '@components/d3/D3GraphColoring.vue';
+import { graphFormula, stringToGraph } from '@ts/graph';
 
-const verbose = ref(true);
+const graph = stringToGraph(`
+1 2
+2 3
+3 4
+4 5
+5 1
 
-const formulaString = "";
+1 6
+2 7
+3 8
+4 9
+5 10
+`);
+
+const formulaString = graphFormula(graph, 3);
 
 const d3Tree = ref();
 const d3GraphColoring = ref();
@@ -32,7 +45,7 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined):
             <div class="w-1/2 flex flex-col shrink-0">
                 <SolverControl v-model:formula="formulaString" :update="update" />
                 <div class="relative w-full h-full">
-                    <D3GraphColoring ref="d3GraphColoring" />
+                    <D3GraphColoring ref="d3GraphColoring" :graph="graph" />
                 </div>
             </div>
             <div class="relative w-full">

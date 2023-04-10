@@ -31,3 +31,13 @@ export interface TreeNode {
     sat_path: boolean;
     children: TreeNode[];
 }
+
+export interface Graph {
+    nodes: {
+        id: number
+    }[],
+    links: {
+        source: number,
+        target: number
+    }[]
+}

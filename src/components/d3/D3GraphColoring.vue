@@ -2,112 +2,18 @@
 
 import * as d3 from "d3"
 import { onMounted, ref } from "vue";
-import { Model } from "./types";
+import { Graph, Model } from "./types";
 
-const nodes = [
-    {
-        "id": 1,
-        "name": "A"
-    },
-    {
-        "id": 2,
-        "name": "B"
-    },
-    {
-        "id": 3,
-        "name": "C"
-    },
-    {
-        "id": 4,
-        "name": "D"
-    },
-    {
-        "id": 5,
-        "name": "E"
-    },
-    {
-        "id": 6,
-        "name": "F"
-    },
-    {
-        "id": 7,
-        "name": "G"
-    },
-    {
-        "id": 8,
-        "name": "H"
-    },
-    {
-        "id": 9,
-        "name": "I"
-    },
-    {
-        "id": 10,
-        "name": "J"
-    }
-]
-
-const links = [
-
-    {
-        "source": 1,
-        "target": 2
-    },
-    {
-        "source": 1,
-        "target": 5
-    },
-    {
-        "source": 1,
-        "target": 6
-    },
-
-    {
-        "source": 2,
-        "target": 3
-    },
-    {
-        "source": 2,
-        "target": 7
-    }
-    ,
-
-    {
-        "source": 3,
-        "target": 4
-    },
-    {
-        "source": 8,
-        "target": 3
-    }
-    ,
-    {
-        "source": 4,
-        "target": 5
-    }
-    ,
-
-    {
-        "source": 4,
-        "target": 9
-    },
-    {
-        "source": 5,
-        "target": 10
-    }
-]
+const props = defineProps({
+    graph: { type: Object as () => Graph, required: true }
+});
 
 const width = 450;
 const height = 450;
 
-const padding = 0;
+const colorMap = ["#ee4444", "#44ee44", "#4444ee", "#eeee44", "#44eeee", "ee44ee"]
 
-const queenFactor = 0.7;
-
-const boardWidth = width - padding * 2;
-const boardHeight = height - padding * 2;
-
-const animationDuration = 0;
+const animationDuration = 250;
 
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var group: GroupSelection;
@@ -123,21 +29,24 @@ onMounted(() => {
     group = svg.insert("g")
         .attr("class", "graph");
 
-    update(null as any); // temp
+    updateGraph(props.graph);
 });
 
-function update(model: Model) {
+function updateGraph(data: Graph) {
+
     const link = group.selectAll("line")
-        .data(links)
+        .data(data.links)
         .join("line")
         .style("stroke", "#888")
         .style("stroke-width", "3");
 
     const node = group.selectAll("circle")
-        .data(nodes)
+        .data(data.nodes)
         .join("circle")
         .attr("r", 20)
-        .attr("fill", "#ccc");
+        .attr("fill", "#ccc")
+        .attr("stroke", "#888")
+        .attr("stroke-width", "3");
 
     const ticked = () => {
         link
@@ -151,20 +60,43 @@ function update(model: Model) {
             .attr("cy", function (d: any) { return d.y; });
     }
 
-    const simulation = d3.forceSimulation(nodes as any)
-        .force("link", d3.forceLink()
-            .id(function (d: any) { return d.id; })
-            .links(links)
-            .strength(1)
-        )
-        .force("charge", d3.forceManyBody().strength(-1000))
+    const forceLink = d3.forceLink()
+        .id(function (d: any) { return d.id; })
+        .links(data.links)
+        .strength(1);
+
+    const forceNode = d3.forceManyBody()
+        .strength(-1000);
+
+    const simulation = d3.forceSimulation(data.nodes as any)
+        .force("link", forceLink)
+        .force("charge", forceNode)
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", ticked);
 
+    simulation.tick(200);
+}
+
+function update(model: Model) {
+    let colors: { [key: string]: string } = {};
+
+    for (let literal in model) {
+        if (model[literal] === true) {
+            let [variable, color] = literal.split("_");
+            colors[variable] = colorMap[parseInt(color)];
+        }
+    }
+
+    group.selectAll("circle")
+        .transition()
+        .duration(animationDuration)
+        .attr("fill", function (d: any) {
+            return colors[d.id] ?? "#ccc";
+        });
 }
 
 
-defineExpose({ update: update });
+defineExpose({ update: update, updateGraph: updateGraph });
 </script>
 
 <template>

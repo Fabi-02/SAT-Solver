@@ -63,13 +63,13 @@ function update(model: Model) {
         value: boolean
     }[] = [];
 
-    for (let key in model) {
-        let [row, col] = key.split("_").map(Number);
+    for (let literal in model) {
+        let [row, col] = literal.split("_").map(Number);
         data.push({
-            id: key,
+            id: literal,
             row: row,
             col: col,
-            value: model[key]
+            value: model[literal]
         });
     }
 
