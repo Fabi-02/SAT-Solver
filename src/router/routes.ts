@@ -3,6 +3,7 @@ import StartPage from '@views/StartPage.vue'
 import Solver from '@views/Solver.vue'
 import NQueens from '@views/NQueens.vue'
 import Sudoku from '@views/Sudoku.vue'
+import GraphColoring from '@views/GraphColoring.vue'
 
 const routes = [
     {
@@ -20,6 +21,10 @@ const routes = [
     {
         path: '/sudoku',
         component: Sudoku
+    },
+    {
+        path: '/graph-coloring',
+        component: GraphColoring
     }
 ]
 
