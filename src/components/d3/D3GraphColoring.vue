@@ -11,7 +11,7 @@ const props = defineProps({
 const width = 450;
 const height = 450;
 
-const colorMap = ["#ee4444", "#44ee44", "#4444ee", "#eeee44", "#44eeee", "ee44ee"]
+const colorMap = ["#ff6666", "#66ff66", "#6666ff", "#ffff66", "#66ffff", "ff66ff"]
 
 const animationDuration = 250;
 
@@ -40,13 +40,25 @@ function updateGraph(data: Graph) {
         .style("stroke", "#888")
         .style("stroke-width", "3");
 
-    const node = group.selectAll("circle")
+    const node = group.selectAll(".circle")
         .data(data.nodes)
-        .join("circle")
+        .join("g")
+        .attr("class", "circle");
+
+    node.append("circle")
         .attr("r", 20)
         .attr("fill", "#ccc")
         .attr("stroke", "#888")
-        .attr("stroke-width", "3");
+        .attr("stroke-width", "3")
+
+    node.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("font-size", "20px")
+        .attr("font-weight", "bold")
+        .attr("fill", "#000")
+        .text(function (d: any) { return d.id; });
+        
 
     const ticked = () => {
         link
@@ -56,8 +68,7 @@ function updateGraph(data: Graph) {
             .attr("y2", function (d: any) { return d.target.y; });
 
         node
-            .attr("cx", function (d: any) { return d.x; })
-            .attr("cy", function (d: any) { return d.y; });
+            .attr("transform", function (d: any) { return `translate(${d.x},${d.y})` })
     }
 
     const forceLink = d3.forceLink()
@@ -82,12 +93,12 @@ function update(model: Model) {
 
     for (let literal in model) {
         if (model[literal] === true) {
-            let [variable, color] = literal.split("_");
-            colors[variable] = colorMap[parseInt(color)];
+            let [variable, color] = literal.split("_").map(Number);
+            colors[variable] = colorMap[color];
         }
     }
 
-    group.selectAll("circle")
+    group.selectAll(".circle > circle")
         .transition()
         .duration(animationDuration)
         .attr("fill", function (d: any) {

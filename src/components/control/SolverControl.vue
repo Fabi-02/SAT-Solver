@@ -93,8 +93,8 @@ function pauseAutoSolve() {
 
 function nextStep() {
     if (auto.value) return;
-    started.value = true;
     let dpll_gen = get_dpll_gen();
+    started.value = true;
     let next = dpll_gen.next();
     if (next.done) {
         finished.value = true;
