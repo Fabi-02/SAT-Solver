@@ -45,6 +45,7 @@ onMounted(() => {
         .style("position", "fixed");
 
     mouseover = (event: MouseEvent, d: TreeLayoutNode) => {
+        if (d.data.name === "") return;
         let result = "";
         switch(d.data.result) {
             case "sat": 
@@ -238,6 +239,7 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
                 .on("mouseleave", mouseleave! as any);
 
             nodeEnter.on("click", (event: MouseEvent, d: TreeLayoutNode) => {
+                if (d.data.name === "") return;
                 let text = "";
                 let node: TreeLayoutNode | null = d;
                 do {
