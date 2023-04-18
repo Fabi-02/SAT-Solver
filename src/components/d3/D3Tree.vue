@@ -4,6 +4,7 @@ import * as d3 from "d3"
 import { Eval, TreeNode } from "./types";
 import { onMounted } from "vue";
 import { HierarchyLink, HierarchyPointNode } from "d3";
+import { showModal } from "@ts/modal";
 
 const props = defineProps({
     nodeSizeX: { type: Number, default: 60 },
@@ -234,7 +235,16 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
             
             nodeEnter.on("mouseover", mouseover! as any)
                 .on("mousemove", mousemove! as any)
-                .on("mouseleave", mouseleave! as any)
+                .on("mouseleave", mouseleave! as any);
+
+            nodeEnter.on("click", (event: MouseEvent, d: TreeLayoutNode) => {
+                let text = "";
+                let node: TreeLayoutNode | null = d;
+                do {
+                    text = `${node.data.key} = ${node.data.neg ? 'False' : 'True'}\n` + text;
+                } while((node = node.parent) !== null && node.data.name !== "");
+                showModal("Node Info", text);
+            });
 
             return nodeEnter;
         },
