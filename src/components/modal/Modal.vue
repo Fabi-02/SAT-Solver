@@ -7,7 +7,7 @@ const props = defineProps({
 
 <template>
     <Transition name="modal">
-        <div v-if="show" class="fixed z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex transition-opacity overflow-auto" @click="$emit('close')">
+        <div v-if="show" class="fixed z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex transition-opacity overflow-auto py-10" @click="$emit('close')">
             <div class="modal-container w-1/2 m-auto p-0 bg-white rounded-md shadow-md transition-all" @click="$event.stopPropagation();">
                 <div class="p-5 text-xl font-semibold text-blue-600">
                     <slot name="header" />

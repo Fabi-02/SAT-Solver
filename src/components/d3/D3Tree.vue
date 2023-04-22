@@ -285,6 +285,10 @@ defineExpose({ update: update });
 
 
 <style lang="css">
+.tree-node {
+    cursor: pointer;
+}
+
 .tree-links {
     fill: none;
     stroke: #AAA;
