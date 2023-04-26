@@ -1,4 +1,5 @@
-import { Graph } from "@components/d3/types";
+import { Graph, InteractionGraph } from "@components/d3/types";
+import { CNF } from "./formula";
 
 export function stringToGraph(input: string): Graph {
     let nodes: { id: number }[] = [];
@@ -64,4 +65,50 @@ export function graphFormula(graph: Graph, N: number): string {
     }
 
     return formulas.slice(0, formulas.length - 1);
+}
+
+export function formulaToInteractionGraph(formula: string): InteractionGraph {
+    let cnf = new CNF(formula);
+
+    let ids: { [id: string]: number } = {};
+    let interactions: { [id1: string]: [string] } = {}
+
+    let i = 0;
+    for (let clause of cnf.clauses) {
+        for (let literal1 of clause.literals) {
+            let id1 = literal1.identifier;
+            if (!(id1 in ids)) {
+                ids[id1] = i++;
+            }
+            for (let literal2 of clause.literals) {
+                let id2 = literal2.identifier;
+                if (id1 === id2) continue;
+                if (id1 in interactions && interactions[id1].includes(id2)) continue;
+                if (id2 in interactions && interactions[id2].includes(id1)) continue;
+                if (!(id1 in interactions)) {
+                    interactions[id1] = [id2];
+                } else {
+                    interactions[id1].push(id2);
+                }
+            }
+        }
+    }
+
+    let nodes: { id: number, literal: string }[] = [];
+    let links: { source: number, target: number }[] = [];
+
+    for (let [literal, id] of Object.entries(ids)) {
+        nodes.push({
+            id: id,
+            literal: literal
+        })
+    }
+
+    for (let id1 in interactions) {
+        for (let id2 of interactions[id1]) {
+            links.push({ source: ids[id1], target: ids[id2] });
+        }
+    }
+
+    return { nodes: nodes, links: links };
 }

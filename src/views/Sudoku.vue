@@ -6,23 +6,30 @@ import { DpllResult, Model, TreeNode } from '@components/d3/types';
 import D3Sudoku from '@components/d3/D3Sudoku.vue';
 import { sudokuFormula } from '@ts/sudoku';
 import SolverControl from '@components/control/SolverControl.vue';
+import { formulaToInteractionGraph } from '@ts/graph';
+import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
 
 const N = ref(2);
 
 const verbose = ref(true);
 
 const formulaString = sudokuFormula(N.value);
+let interactionGraph = ref(formulaToInteractionGraph(formulaString));
+
 
 const d3Tree = ref();
 const d3Sudoku = ref();
+const d3InteractionGraph = ref();
+
 
 var model: Model;
 
 function update(data: TreeNode, pathId: number, result: DpllResult | undefined): void {
-    d3Tree.value.update(data, pathId);
+    d3Tree.value?.update(data, pathId);
     if (result !== undefined) {
         model = result.model;
         d3Sudoku.value.update(model);
+        d3InteractionGraph.value?.update(result.model);
     }
 }
 
@@ -48,7 +55,8 @@ function updateVerbose() {
                 </div>
             </div>
             <div class="relative w-full">
-                <D3Tree ref="d3Tree" :node-size-x="100" />
+                <!-- <D3Tree ref="d3Tree" :node-size-x="100" /> -->
+                <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/>
             </div>
         </div>
     </ContentPage>

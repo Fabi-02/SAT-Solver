@@ -5,6 +5,8 @@ import D3Tree from '@components/d3/D3Tree.vue'
 import { ref } from 'vue';
 import { DpllResult, TreeNode } from '@components/d3/types';
 import SolverControl from '@components/control/SolverControl.vue';
+import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
+import { formulaToInteractionGraph } from '@ts/graph';
 
 const formulaString = ref(`2 3 4 -5
 1 5 -6
@@ -16,13 +18,23 @@ const formulaString = ref(`2 3 4 -5
 1 -2 -3 -4 -5 6`);
 
 const d3Tree = ref();
+const d3InteractionGraph = ref();
 const formulaInput = ref();
 
 function update(data: TreeNode, pathId: number, result: DpllResult | undefined) {
-    d3Tree.value.update(data, pathId);
+    d3Tree.value?.update(data, pathId);
+
     if (result !== undefined) {
         formulaInput.value.updateResult(result.cnf_result.results);
+        d3InteractionGraph.value?.update(result.model);
     }
+}
+
+let interactionGraph = ref(formulaToInteractionGraph(formulaString.value));
+
+function updateInteractionGraph() {
+    interactionGraph.value = formulaToInteractionGraph(formulaString.value);
+    d3InteractionGraph.value?.updateGraph(interactionGraph.value);
 }
 
 </script>
@@ -36,6 +48,7 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined) 
             </div>
             <div class="relative w-full">
                 <D3Tree ref="d3Tree" />
+                <!-- <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/> -->
             </div>
         </div>
     </ContentPage>

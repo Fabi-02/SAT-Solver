@@ -41,3 +41,14 @@ export interface Graph {
         target: number
     }[]
 }
+
+export interface InteractionGraph {
+    nodes: {
+        id: number,
+        literal: string
+    }[],
+    links: {
+        source: number,
+        target: number
+    }[]
+}

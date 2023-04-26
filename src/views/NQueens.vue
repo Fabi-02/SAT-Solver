@@ -6,25 +6,36 @@ import { DpllResult, TreeNode } from '@components/d3/types';
 import { nQueensFormula } from '@ts/nqueens';
 import D3NQueens from '@components/d3/D3NQueens.vue';
 import SolverControl from '@components/control/SolverControl.vue';
+import { formulaToInteractionGraph } from '@ts/graph';
+import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
 
 const N = ref(4);
 
 var formulaString = ref(nQueensFormula(N.value));
+let interactionGraph = ref(formulaToInteractionGraph(formulaString.value));
 
 const solverControl = ref();
 const d3Tree = ref();
 const d3NQueens = ref();
+const d3InteractionGraph = ref();
 
 function updateN() {
     formulaString.value = nQueensFormula(N.value);
     d3NQueens.value.updateN()
+    updateInteractionGraph();
 }
 
 function update(data: TreeNode, pathId: number, result: DpllResult | undefined) {
-    d3Tree.value.update(data, pathId);
+    d3Tree.value?.update(data, pathId);
     if (result !== undefined) {
         d3NQueens.value.update(result.model);
+        d3InteractionGraph.value?.update(result.model);
     }
+}
+
+function updateInteractionGraph() {
+    interactionGraph.value = formulaToInteractionGraph(formulaString.value);
+    d3InteractionGraph.value?.updateGraph(interactionGraph.value);
 }
 
 </script>
@@ -40,7 +51,8 @@ function update(data: TreeNode, pathId: number, result: DpllResult | undefined) 
                 </div>
             </div>
             <div class="relative w-full">
-                <D3Tree ref="d3Tree" :node-size-x="80" />
+                <!-- <D3Tree ref="d3Tree" :node-size-x="80" /> -->
+                <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/>
             </div>
         </div>
     </ContentPage>
