@@ -14,6 +14,8 @@ const N = ref(4);
 var formulaString = ref(nQueensFormula(N.value));
 let interactionGraph = ref(formulaToInteractionGraph(formulaString.value));
 
+const graphMode = ref('dpll_graph' as 'dpll_graph' | 'interaction_graph');
+
 const solverControl = ref();
 const d3Tree = ref();
 const d3NQueens = ref();
@@ -38,6 +40,15 @@ function updateInteractionGraph() {
     d3InteractionGraph.value?.updateGraph(interactionGraph.value);
 }
 
+
+function changeGraphMode() {
+    if (graphMode.value === 'dpll_graph') {
+        graphMode.value = 'interaction_graph';
+    } else {
+        graphMode.value = 'dpll_graph';
+    }
+}
+
 </script>
 
 <template>
@@ -51,8 +62,15 @@ function updateInteractionGraph() {
                 </div>
             </div>
             <div class="relative w-full">
-                <!-- <D3Tree ref="d3Tree" :node-size-x="80" /> -->
-                <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/>
+                <div  v-show="graphMode === 'dpll_graph'">
+                    <D3Tree ref="d3Tree" :node-size-x="80" />
+                </div>
+                <div  v-show="graphMode === 'interaction_graph'">
+                    <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/>
+                </div>
+                <button class="absolute right-3 top-3 control-button px-3" @click="changeGraphMode">
+                    {{ graphMode === 'dpll_graph' ? 'DPLL Baum' : 'Interaktionsgraph' }}
+                </button>
             </div>
         </div>
     </ContentPage>
