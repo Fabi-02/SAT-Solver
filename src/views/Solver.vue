@@ -19,6 +19,7 @@ const formulaString = ref(`2 3 4 -5
 
 const graphMode = ref('dpll_graph' as 'dpll_graph' | 'interaction_graph');
 
+const solverControl = ref();
 const d3Tree = ref();
 const d3InteractionGraph = ref();
 const formulaInput = ref();
@@ -55,8 +56,8 @@ watch(formulaString, updateInteractionGraph);
     <ContentPage name="DPLL-Solver">
         <div class="flex space-x-5 h-full">
             <div class="w-60 flex flex-col shrink-0">
-                <SolverControl v-model:formula="formulaString" :update="update" />
-                <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full" />
+                <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
+                <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full formula-input" :disabled="solverControl && (solverControl.started || solverControl.finished)" />
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">
@@ -72,3 +73,10 @@ watch(formulaString, updateInteractionGraph);
         </div>
     </ContentPage>
 </template>
+
+<style>
+.formula-input[disabled=true] input,
+.formula-input[disabled=true] textarea {
+  pointer-events:none;
+}
+</style>
