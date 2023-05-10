@@ -8,7 +8,8 @@ import GraphColoring from '@views/GraphColoring.vue'
 const routes = [
     {
         path: '/',
-        component: StartPage
+        // component: StartPage
+        redirect: '/solver'
     },
     {
         path: '/solver',
