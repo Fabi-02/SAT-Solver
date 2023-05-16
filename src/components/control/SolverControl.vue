@@ -9,6 +9,7 @@ const props = defineProps({
     update: { type: Function, required: true }
 });
 
+const usePureLiteral = ref(false);
 const useUnitProp = ref(true);
 
 var id = 0;
@@ -37,7 +38,7 @@ function resetData() {
         key: "",
         neg: false,
         result: "unknown",
-        unit_prop: false,
+        heuristic: false,
         sat_path: false,
         children: []
     };
@@ -49,7 +50,7 @@ function get_dpll_gen() {
 
         let cnf = new CNF(props.formula);
 
-        dpll_gen = dpll(cnf, useUnitProp.value)
+        dpll_gen = dpll(cnf, { pure_literal: usePureLiteral.value, unit_prop: useUnitProp.value } );
     }
     return dpll_gen;
 }
@@ -111,7 +112,7 @@ function reset() {
     pauseAuto = false;
     reset_dpll_gen();
     resetData();
-    props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: {}, unit_prop: false});
+    props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: {}, heuristic: false});
 }
 
 function nextLiteral(data: TreeNode, model: Model): TreeNode | null {
@@ -158,7 +159,7 @@ function addDataSet(result: DpllResult) {
             key: key,
             neg: !model[key],
             result: result.cnf_result.result,
-            unit_prop: result.unit_prop,
+            heuristic: result.heuristic,
             sat_path: result.cnf_result.result === "sat" ? true : false,
             children: []
         }
@@ -188,9 +189,16 @@ defineExpose({
         <button @click="autoSolve" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Auto</button>
         <button @click="pauseAutoSolve" class="control-button w-full mx-1 mb-3" :disabled="!auto || finished">Pause</button>
     </div>
-    <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
-        <input type="checkbox" class="sr-only peer" v-model="useUnitProp" :disabled="started || finished">
-        <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
-        <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Unit Propagation</span>
-    </label>
+    <div class="w-full flex flex-row">
+        <label class="relative w-full inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
+            <input type="checkbox" class="sr-only peer" v-model="usePureLiteral" :disabled="started || finished">
+            <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
+            <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Pure Literal</span>
+        </label>
+        <label class="relative w-full inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
+            <input type="checkbox" class="sr-only peer" v-model="useUnitProp" :disabled="started || finished">
+            <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
+            <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Unit Propagation</span>
+        </label>
+    </div>
 </template>

@@ -17,7 +17,7 @@ export interface Model {
 export interface DpllResult {
     cnf_result: CNFResult;
     model: Model;
-    unit_prop: boolean;
+    heuristic: boolean;
 }
 
 export interface TreeNode {
@@ -27,7 +27,7 @@ export interface TreeNode {
     key: string;
     neg: boolean;
     result: Eval;
-    unit_prop: boolean;
+    heuristic: boolean;
     sat_path: boolean;
     children: TreeNode[];
 }

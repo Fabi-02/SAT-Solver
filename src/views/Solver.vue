@@ -55,7 +55,7 @@ watch(formulaString, updateInteractionGraph);
 <template>
     <ContentPage name="DPLL-Solver">
         <div class="flex space-x-5 h-full">
-            <div class="w-60 flex flex-col shrink-0">
+            <div class="w-96 flex flex-col shrink-0">
                 <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
                 <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full formula-input" :disabled="solverControl && (solverControl.started || solverControl.finished)" />
             </div>

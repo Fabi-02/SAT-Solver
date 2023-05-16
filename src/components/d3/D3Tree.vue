@@ -108,7 +108,7 @@ onMounted(() => {
         key: "",
         neg: false,
         result: "unknown",
-        unit_prop: false,
+        heuristic: false,
         sat_path: false,
         children: []
     }, 0);
@@ -151,8 +151,8 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
         if (d.target.data.pathId == pathId) {
             classes += " path-link";
         }
-        if (d.target.data.unit_prop) {
-            classes += " unit-prop-link";
+        if (d.target.data.heuristic) {
+            classes += " heuristic-link";
         }
         if (d.target.data.sat_path) {
             classes += " sat-path-link";
@@ -305,7 +305,7 @@ defineExpose({ update: update });
     stroke-width: 2;
 }
 
-.unit-prop-link {
+.heuristic-link {
     stroke-dasharray: 10, 5;
 }
 
