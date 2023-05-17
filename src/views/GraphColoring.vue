@@ -54,7 +54,7 @@ function changeGraphMode() {
 </script>
 
 <template>
-    <ContentPage name="Graph Färbung">
+    <ContentPage name="Graphenfärbung">
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
                 <SolverControl v-model:formula="formulaString" :update="update" />

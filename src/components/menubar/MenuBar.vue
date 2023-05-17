@@ -18,7 +18,7 @@ import MenuItem from './MenuItem.vue'
             <MenuItem to="/solver"><font-awesome-icon icon="fa-solid fa-gears" /> Solver</MenuItem>
             <MenuItem to="/n-queens"><font-awesome-icon icon="fa-solid fa-chess-queen" /> N-Damen</MenuItem>
             <MenuItem to="/sudoku"><font-awesome-icon icon="fa-solid fa-border-all" /> Sudoku</MenuItem>
-            <MenuItem to="/graph-coloring"><font-awesome-icon icon="fa-solid fa-share-nodes" /> Graph Färbung</MenuItem>
+            <MenuItem to="/graph-coloring"><font-awesome-icon icon="fa-solid fa-share-nodes" /> Graphenfärbung</MenuItem>
         </div>
     </nav>
 </template>
