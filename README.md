@@ -9,6 +9,8 @@ Implementierte Beispielprobleme:
 * Sudoku lösen 
 * Graphenfärbung
 
+Diese Anwendung wurde im laufe einer Studienarbeit entwickelt.
+
 ## Dependencies
 
 * [Node.js](https://nodejs.org/de/)
