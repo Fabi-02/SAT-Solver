@@ -9,7 +9,7 @@ Implementierte Beispielprobleme:
 * Sudoku lösen 
 * Graphenfärbung
 
-Diese Anwendung wurde im laufe einer Studienarbeit entwickelt.
+Diese Anwendung wurde im Rahmen einer Studienarbeit entwickelt.
 
 ## Dependencies
 
