@@ -16,7 +16,7 @@ const props = defineProps({
                  @click="$event.stopPropagation();">
                 <div class="p-5 text-xl font-semibold text-blue-600">
                     <p v-if="modalData.modalType == 'NodeInfo'">Node Info</p>
-                    <p v-if="modalData.modalType == 'Formula'">DPLL-Formel</p>
+                    <p v-if="modalData.modalType == 'Formula'">KNF-Formel</p>
                 </div>
 
                 <div class="p-5 border-t border-gray-200">
