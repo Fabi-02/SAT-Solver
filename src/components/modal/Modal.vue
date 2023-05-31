@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { modalData } from '@ts/modal';
+
 const props = defineProps({
     show: Boolean
 })
@@ -9,12 +11,14 @@ const props = defineProps({
     <Transition name="modal">
         <div v-if="show" class="fixed z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex transition-opacity overflow-auto py-10" @click="$emit('close')">
             <div class="modal-container w-1/2 m-auto p-0 bg-white rounded-md shadow-md transition-all" @click="$event.stopPropagation();">
-                <div class="p-5 text-xl font-semibold text-blue-600">
-                    <slot name="header" />
+                <div class="p-5 text-xl font-semibold text-blue-600" v-switch="modalData.modalType">
+                    <p v-case="'NodeInfo'">Node Info</p>
                 </div>
 
-                <div class="p-5 border-t border-gray-200">
-                    <slot name="body" />
+                <div class="p-5 border-t border-gray-200" v-switch="modalData.modalType">
+                    <div v-case="'NodeInfo'">
+                        <p v-for="item in modalData.data">{{ item.key }} <span class="text-gray-400">=</span> <span :class="{'text-red-500': item.neg, 'text-green-500': !item.neg}">{{ item.neg ? "False" : "True" }}</span></p>
+                    </div>
                 </div>
                 
                 <div class="p-5 border-t border-gray-200">

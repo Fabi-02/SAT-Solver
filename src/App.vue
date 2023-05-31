@@ -14,13 +14,6 @@ import { modalData } from '@ts/modal';
         <RouterView class="mt-14 overflow-auto" />
     </div>
     <Teleport to="body">
-        <Modal :show="modalData.show" @close="modalData.show = false">
-            <template #header>
-                <p>{{ modalData.header }}</p>
-            </template>
-            <template #body>
-                <p class="whitespace-pre-line">{{ modalData.body }}</p>
-            </template>
-        </Modal>
+        <Modal :show="modalData.show" @close="modalData.show = false"></Modal>
     </Teleport>
 </template>

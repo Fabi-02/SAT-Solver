@@ -1,14 +1,16 @@
 import { reactive } from "vue";
 
+export type ModalType = "NodeInfo";
+
 export const modalData = reactive({
     show: false,
-    header: '',
-    body: ''
+    modalType: '' as ModalType,
+    data: null as any
 });
 
-export function showModal(header: string, body: string) {
-    modalData.header = header;
-    modalData.body = body;
+export function showModal(modalType: ModalType, data: any) {
+    modalData.modalType = modalType;
+    modalData.data = data;
     modalData.show = true;
 }
 

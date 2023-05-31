@@ -240,12 +240,16 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
 
             nodeEnter.on("click", (event: MouseEvent, d: TreeLayoutNode) => {
                 if (d.data.name === "") return;
-                let text = "";
+                let data: any[] = [];
                 let node: TreeLayoutNode | null = d;
                 do {
-                    text = `${node.data.key} = ${node.data.neg ? 'False' : 'True'}\n` + text;
+                    // text = `${node.data.key} = ${node.data.neg ? 'False' : 'True'}\n` + text;
+                    data.unshift({
+                        key: node.data.key,
+                        neg: node.data.neg
+                    });
                 } while((node = node.parent) !== null && node.data.name !== "");
-                showModal("Node Info", text);
+                showModal("NodeInfo", data);
             });
 
             return nodeEnter;
