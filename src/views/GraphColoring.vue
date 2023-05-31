@@ -8,6 +8,7 @@ import SolverControl from '@components/control/SolverControl.vue';
 import D3GraphColoring from '@components/d3/D3GraphColoring.vue';
 import { formulaToInteractionGraph, graphFormula, stringToGraph } from '@ts/graph';
 import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
+import ShowFormula from '@components/formula/ShowFormula.vue';
 
 const graph = stringToGraph(`
 1 2
@@ -61,6 +62,7 @@ function changeGraphMode() {
                 <div class="relative w-full h-full">
                     <D3GraphColoring ref="d3GraphColoring" :graph="graph" />
                 </div>
+                <ShowFormula v-model:formula="formulaString"></ShowFormula>
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">

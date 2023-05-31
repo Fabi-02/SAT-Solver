@@ -8,6 +8,7 @@ import D3NQueens from '@components/d3/D3NQueens.vue';
 import SolverControl from '@components/control/SolverControl.vue';
 import { formulaToInteractionGraph } from '@ts/graph';
 import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
+import ShowFormula from '@components/formula/ShowFormula.vue';
 
 const N = ref(4);
 
@@ -60,6 +61,7 @@ function changeGraphMode() {
                 <div class="relative w-full h-full">
                     <D3NQueens ref="d3NQueens" :N="N" />
                 </div>
+                <ShowFormula v-model:formula="formulaString"></ShowFormula>
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">

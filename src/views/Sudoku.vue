@@ -8,6 +8,7 @@ import { sudokuFormula } from '@ts/sudoku';
 import SolverControl from '@components/control/SolverControl.vue';
 import { formulaToInteractionGraph } from '@ts/graph';
 import D3InteractionGraph from '@components/d3/D3InteractionGraph.vue';
+import ShowFormula from '@components/formula/ShowFormula.vue';
 
 const N = ref(2);
 
@@ -63,6 +64,7 @@ function changeGraphMode() {
                 <div class="relative w-full h-full">
                     <D3Sudoku ref="d3Sudoku" :N="N" v-model:verbose="verbose" />
                 </div>
+                <ShowFormula v-model:formula="formulaString"></ShowFormula>
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">

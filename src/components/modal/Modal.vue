@@ -9,18 +9,31 @@ const props = defineProps({
 
 <template>
     <Transition name="modal">
-        <div v-if="show" class="fixed z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex transition-opacity overflow-auto py-10" @click="$emit('close')">
-            <div class="modal-container w-1/2 m-auto p-0 bg-white rounded-md shadow-md transition-all" @click="$event.stopPropagation();">
-                <div class="p-5 text-xl font-semibold text-blue-600" v-switch="modalData.modalType">
-                    <p v-case="'NodeInfo'">Node Info</p>
+        <div v-if="show"
+             class="fixed z-50 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex transition-opacity overflow-auto py-10"
+             @click="$emit('close')">
+            <div class="modal-container w-1/2 m-auto p-0 bg-white rounded-md shadow-md transition-all"
+                 @click="$event.stopPropagation();">
+                <div class="p-5 text-xl font-semibold text-blue-600">
+                    <p v-if="modalData.modalType == 'NodeInfo'">Node Info</p>
+                    <p v-if="modalData.modalType == 'Formula'">DPLL-Formel</p>
                 </div>
 
-                <div class="p-5 border-t border-gray-200" v-switch="modalData.modalType">
-                    <div v-case="'NodeInfo'">
-                        <p v-for="item in modalData.data">{{ item.key }} <span class="text-gray-400">=</span> <span :class="{'text-red-500': item.neg, 'text-green-500': !item.neg}">{{ item.neg ? "False" : "True" }}</span></p>
+                <div class="p-5 border-t border-gray-200">
+                    <div v-if="modalData.modalType == 'NodeInfo'">
+                        <p v-for="item in modalData.data">{{ item.key }} <span class="text-gray-400">=</span> <span
+                                  :class="{ 'text-red-500': item.neg, 'text-green-500': !item.neg }">{{ item.neg ? "False" :
+                                      "True" }}</span></p>
+                    </div>
+                    <div v-if="modalData.modalType == 'Formula'">
+                        <p v-for="(clause, index) in modalData.data.clauses" class="flex">
+                            <span class="w-5" v-if="index !== 0">∧</span>
+                            <span class="w-5" v-else></span>
+                            ( {{ clause }} )
+                        </p>
                     </div>
                 </div>
-                
+
                 <div class="p-5 border-t border-gray-200">
                     <button class="modal-button px-5 py-1" @click="$emit('close')">Fertig</button>
                 </div>
@@ -30,7 +43,6 @@ const props = defineProps({
 </template>
 
 <style>
-
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
@@ -41,16 +53,15 @@ const props = defineProps({
  */
 
 .modal-enter-from {
-  opacity: 0;
+    opacity: 0;
 }
 
 .modal-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
-</style>
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}</style>
