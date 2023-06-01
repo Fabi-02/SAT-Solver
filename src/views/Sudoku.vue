@@ -19,26 +19,50 @@ let interactionGraph = ref(formulaToInteractionGraph(formulaString));
 
 const graphMode = ref('dpll_graph' as 'dpll_graph' | 'interaction_graph');
 
+const solverControl = ref();
 const d3Tree = ref();
 const d3Sudoku = ref();
 const d3InteractionGraph = ref();
 
 
-var model: Model;
+var defaultModel: Model = {};
+
+var cacheModel: Model;
 
 function update(data: TreeNode, pathId: number, result: DpllResult | undefined): void {
     d3Tree.value?.update(data, pathId);
     if (result !== undefined) {
-        model = result.model;
-        d3Sudoku.value.update(model);
+        cacheModel = result.model;
+        d3Sudoku.value.update(cacheModel);
         d3InteractionGraph.value?.update(result.model);
     }
 }
 
 function updateVerbose() {
-    if (model !== undefined) {
-        d3Sudoku.value.update(model);
+    if (cacheModel !== undefined) {
+        d3Sudoku.value.update(cacheModel);
     }
+}
+
+function setNumber(cellX: number, cellY: number, number: number) {
+    for (let n = 1; n <= N.value * N.value; n++) {
+        defaultModel[`${cellY}_${cellX}_${n}`] = false;
+    }
+    defaultModel[`${cellY}_${cellX}_${number}`] = true;
+    cacheModel = defaultModel;
+
+    solverControl.value.setDefaultModel(defaultModel);
+    d3Sudoku.value.update(defaultModel);
+}
+
+function resetNumber(cellX: number, cellY: number) {
+    for (let n = 1; n <= N.value * N.value; n++) {
+        delete defaultModel[`${cellY}_${cellX}_${n}`];
+    }
+    cacheModel = defaultModel;
+
+    solverControl.value.setDefaultModel(defaultModel);
+    d3Sudoku.value.update(defaultModel);
 }
 
 function changeGraphMode() {
@@ -55,14 +79,14 @@ function changeGraphMode() {
     <ContentPage name="Sudoku">
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
-                <SolverControl v-model:formula="formulaString" :update="update" />
+                <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
                 <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
                     <input type="checkbox" class="sr-only peer" v-model="verbose" @change="updateVerbose">
                     <div class="checkbox-switch"></div>
                     <span class="ml-3 text-sm font-medium text-gray-900">Verbose Modus</span>
                 </label>
                 <div class="relative w-full h-full">
-                    <D3Sudoku ref="d3Sudoku" :N="N" v-model:verbose="verbose" />
+                    <D3Sudoku ref="d3Sudoku" :N="N" :setNumber="setNumber" :resetNumber="resetNumber" v-model:verbose="verbose" :inputDisabled="solverControl && (solverControl.started || solverControl.finished)" />
                 </div>
                 <ShowFormula v-model:formula="formulaString"></ShowFormula>
             </div>

@@ -25,6 +25,8 @@ var started = ref(false);
 var auto = ref(false);
 var pauseAuto: boolean = false;
 
+var defaultModel: Model = {};
+
 function resetData() {
     finished.value = false;
     started.value = false;
@@ -44,24 +46,28 @@ function resetData() {
     };
 }
 
-function get_dpll_gen() {
+function getDpllGen() {
     if (dpll_gen === null) {
         resetData();
 
         let cnf = new CNF(props.formula);
 
-        dpll_gen = dpll(cnf, { pure_literal: usePureLiteral.value, unit_prop: useUnitProp.value } );
+        dpll_gen = dpll(cnf, { pure_literal: usePureLiteral.value, unit_prop: useUnitProp.value }, {... defaultModel} );
     }
     return dpll_gen;
 }
 
-function reset_dpll_gen() {
+function resetDpllGen() {
     dpll_gen = null;
+}
+
+function setDefaultModel(model: Model) {
+    defaultModel = model;
 }
 
 async function autoSolve() {
     if (auto.value) return;
-    let dpll_gen = get_dpll_gen();
+    let dpll_gen = getDpllGen();
     auto.value = true;
     started.value = true;
     while (auto.value) {
@@ -84,7 +90,7 @@ async function autoSolve() {
     }
     pathId = 0;
     props.update(data, pathId);
-    reset_dpll_gen();
+    resetDpllGen();
 }
 
 function pauseAutoSolve() {
@@ -94,12 +100,12 @@ function pauseAutoSolve() {
 
 function nextStep() {
     if (auto.value) return;
-    let dpll_gen = get_dpll_gen();
+    let dpll_gen = getDpllGen();
     started.value = true;
     let next = dpll_gen.next();
     if (next.done) {
         finished.value = true;
-        reset_dpll_gen();
+        resetDpllGen();
         pathId = 0;
         props.update(data, pathId);
     } else {
@@ -110,9 +116,9 @@ function nextStep() {
 function reset() {
     auto.value = false;
     pauseAuto = false;
-    reset_dpll_gen();
+    resetDpllGen();
     resetData();
-    props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: {}, heuristic: false});
+    props.update(data, pathId, {cnf_result: {result: "unknown", results: []}, model: defaultModel, heuristic: false});
 }
 
 function nextLiteral(data: TreeNode, model: Model): TreeNode | null {
@@ -175,7 +181,8 @@ function addDataSet(result: DpllResult) {
 
 defineExpose({
     started,
-    finished
+    finished,
+    setDefaultModel
 });
 
 </script>

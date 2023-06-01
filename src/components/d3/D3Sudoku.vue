@@ -1,12 +1,15 @@
 <script setup lang="ts">
 
 import * as d3 from "d3"
-import { onMounted } from "vue";
+import { onMounted, onUnmounted, watch } from "vue";
 import { Model } from "./types";
 
 const props = defineProps({
     N: { type: Number, required: true },
-    verbose: { type: Boolean, required: true }
+    verbose: { type: Boolean, required: true },
+    inputDisabled: { type: Boolean, required: true },
+    setNumber: { type: Function, required: true },
+    resetNumber: { type: Function, required: true }
 });
 
 const width = 450;
@@ -21,6 +24,8 @@ const boardHeight = height - padding * 2;
 
 const animationDuration = 250;
 
+var selected: [number, number] = [-1, -1]
+
 type GroupSelection = d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var boardGroup: GroupSelection;
 
@@ -32,6 +37,17 @@ onMounted(() => {
         .attr("width", "100%")
         // .attr("preserveAspectRatio", "none")
         .attr("viewBox", `0 0 ${width} ${height}`);
+
+    boardGroup = svg.insert("g")
+        .attr("class", "sudoku-board");
+
+    boardGroup.insert("rect")
+        .attr("class", "selected-cell")
+        .attr("x", padding)
+        .attr("y", padding)
+        .attr("width", boardWidth / NN)
+        .attr("height", boardHeight / NN)
+        .attr("fill", "none");
 
     for (let x = 0; x < props.N; x++) {
         for (let y = 0; y < props.N; y++) {
@@ -55,18 +71,57 @@ onMounted(() => {
                         .attr("y", posY + deltaY)
                         .attr("width", boardWidth / NN)
                         .attr("height", boardHeight / NN)
-                        .attr("fill", "none")
+                        .attr("fill", "transparent")
                         .attr("stroke", "black")
-                        .attr("stroke-width", 1);
+                        .attr("stroke-width", 1)
+                        .on("click", (event: MouseEvent) => {
+                            if (props.inputDisabled) return;
+                            let clickX = (x * props.N) + sx;
+                            let clickY = (y * props.N) + sy;
+                            selectCell(clickX + 1, clickY + 1);
+                        });
                 }
             }
         }
     }
-    
-
-    boardGroup = svg.insert("g")
-        .attr("class", "sudoku-board");
 });
+
+function selectCell(cellX: number, cellY: number) {
+    let NN = props.N * props.N;
+
+    if ((cellX === -1 && cellY === -1) || (cellX === selected[0] && cellY === selected[1])) {
+        selected[0] = -1;
+        selected[1] = -1;
+
+        boardGroup.select(".selected-cell")
+            .attr("fill", "none");
+    } else {
+        selected[0] = cellX;
+        selected[1] = cellY;
+
+        boardGroup.select(".selected-cell")
+            .attr("x", padding + (cellX - 1) * boardWidth / NN)
+            .attr("y", padding + (cellY - 1) * boardWidth / NN)
+            .attr("fill", "#CFC");
+    }
+}
+
+function pressNumber(event: KeyboardEvent) {
+    if (props.inputDisabled || selected[0] === -1 || selected[1] === -1)
+        return;
+
+    let NN = props.N * props.N;
+
+    let key = event.key;
+    if (key.match(/[1-9]/)) {
+        let number = parseInt(key);
+        if (number <= NN) {
+            props.setNumber(selected[0], selected[1], number);
+        }
+    } else if (key === "Backspace") {
+        props.resetNumber(selected[0], selected[1]);
+    }
+}
 
 function posFromNumber(number: number): [number, number] {
     number -= 1;
@@ -93,8 +148,8 @@ function update(model: Model) {
         });
     }
 
-    boardGroup.selectAll(".sudoku-board > .number")
-        .data(props.verbose ? [] : data)
+    boardGroup.selectAll(".number")
+        .data(props.verbose ? [] : data, (d) => (d as any).id)
         .join(
             enter => {
                 let numberEnter = enter.append("text")
@@ -121,8 +176,8 @@ function update(model: Model) {
                 .attr("opacity", d => d.value ? 1 : 0)
         );
 
-    boardGroup.selectAll(".sudoku-board > .small-number")
-        .data(props.verbose ? data : [])
+    boardGroup.selectAll(".small-number")
+        .data(props.verbose ? data : [], (d) => (d as any).id)
         .join(
             enter => {
                 let numberEnter = enter.append("text")
@@ -153,7 +208,19 @@ function update(model: Model) {
         );
 }
 
-defineExpose({ update: update });
+watch(() => props.inputDisabled, () => {
+    selectCell(-1, -1);
+});
+
+onMounted(() => {
+    window.addEventListener("keydown", pressNumber);
+});
+
+onUnmounted(() => {
+    window.removeEventListener("keydown", pressNumber); 
+})
+
+defineExpose({ update });
 </script>
 
 <template>
