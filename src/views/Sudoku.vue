@@ -86,7 +86,7 @@ function changeGraphMode() {
                     <span class="ml-3 text-sm font-medium text-gray-900">Verbose Modus</span>
                 </label>
                 <div class="relative w-full h-full">
-                    <D3Sudoku ref="d3Sudoku" :N="N" :setNumber="setNumber" :resetNumber="resetNumber" v-model:verbose="verbose" :inputDisabled="solverControl && (solverControl.started || solverControl.finished)" />
+                    <D3Sudoku ref="d3Sudoku" :N="N" :setNumber="setNumber" :resetNumber="resetNumber" v-model:verbose="verbose" :inputDisabled="solverControl !== undefined && (solverControl.started || solverControl.finished)" />
                 </div>
                 <ShowFormula v-model:formula="formulaString"></ShowFormula>
             </div>

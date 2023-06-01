@@ -57,7 +57,7 @@ watch(formulaString, updateInteractionGraph);
         <div class="flex space-x-5 h-full">
             <div class="w-96 flex flex-col shrink-0">
                 <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
-                <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full formula-input" :disabled="solverControl && (solverControl.started || solverControl.finished)" />
+                <FormulaInput v-model:formula="formulaString" ref="formulaInput" class="h-full formula-input" :disabled="solverControl !== undefined && (solverControl.started || solverControl.finished)" />
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">
