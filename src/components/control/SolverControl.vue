@@ -11,6 +11,7 @@ const props = defineProps({
 
 const usePureLiteral = ref(false);
 const useUnitProp = ref(true);
+const speed = ref(8);
 
 var id = 0;
 var pathId = 0;
@@ -86,7 +87,7 @@ async function autoSolve() {
             auto.value = false;
             break;
         }
-        await timer(250);
+        await timer((11 - speed.value) * 100);
     }
     pathId = 0;
     props.update(data, pathId);
@@ -189,23 +190,25 @@ defineExpose({
 
 <template>
     <div class="w-full flex flex-row">
-        <button @click="nextStep" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Step</button>
-        <button @click="reset" class="control-button w-full mx-1 mb-3" :disabled="!started">Reset</button>
+        <button @click="nextStep" class="control-button w-full mr-1 mb-3" :disabled="auto || finished">Step</button>
+        <button @click="reset" class="control-button w-full ml-1 mb-3" :disabled="!started">Reset</button>
     </div>
     <div class="w-full flex flex-row">
-        <button @click="autoSolve" class="control-button w-full mx-1 mb-3" :disabled="auto || finished">Auto</button>
-        <button @click="pauseAutoSolve" class="control-button w-full mx-1 mb-3" :disabled="!auto || finished">Pause</button>
+        <button @click="autoSolve" class="control-button w-full mr-1 mb-3" :disabled="auto || finished">Auto</button>
+        <button @click="pauseAutoSolve" class="control-button w-full ml-1 mb-3" :disabled="!auto || finished">Pause</button>
     </div>
     <div class="w-full flex flex-row">
-        <label class="relative w-full inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
+        <label class="relative w-full inline-flex items-center mb-3 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
             <input type="checkbox" class="sr-only peer" v-model="usePureLiteral" :disabled="started || finished">
             <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
             <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Pure Literal</span>
         </label>
-        <label class="relative w-full inline-flex items-center mb-5 ml-2 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
+        <label class="relative w-full inline-flex items-center mb-3 cursor-pointer" :class="{'cursor-not-allowed': started || finished}">
             <input type="checkbox" class="sr-only peer" v-model="useUnitProp" :disabled="started || finished">
             <div class="checkbox-switch" :class="{'opacity-50': started || finished}"></div>
             <span class="ml-3 text-sm font-medium text-gray-900" :class="{'opacity-50': started || finished}">Unit Propagation</span>
         </label>
     </div>
+    <p>Geschwindigkeit (auto): {{ speed }}</p>
+    <input id="default-range" type="range" v-model.number="speed" min="1" max="10" class="w-full h-2 mb-4 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
 </template>

@@ -207,7 +207,7 @@ defineExpose({ updateResult: updateResult });
             <span class="w-5 mb-1" v-if="index !== 0">∧</span>
             <span class="w-5" v-else></span>
             <input type="text" :name="'formula-' + index" autocomplete="off"
-                class="block overflow-ellipsis w-full py-1 px-4 mb-1 mx-1 leading-tight text-input"
+                class="block overflow-ellipsis w-full py-1 px-4 mb-1 ml-1 leading-tight text-input"
                 :class="{ 'bg-red-100 border-red-600 border-2': !item.valid, 'bg-green-100': item.result === 'sat', 'bg-red-100': item.result === 'unsat' }" v-model="item.text"
                 @focusin="focusInput(index, true)"
                 @input="input(index)" @keydown="keyDown($event, index)"

@@ -24,5 +24,5 @@ function showFormula() {
 </script>
 
 <template>
-    <button @click="showFormula" class="control-button w-40 mx-1 mt-3">Formel anzeigen</button>
+    <button @click="showFormula" class="control-button w-40 mt-3">Formel anzeigen</button>
 </template>

@@ -80,7 +80,7 @@ function changeGraphMode() {
         <div class="flex space-x-5 h-full">
             <div class="w-1/2 flex flex-col shrink-0">
                 <SolverControl ref="solverControl" v-model:formula="formulaString" :update="update" />
-                <label class="relative inline-flex items-center mb-5 ml-2 cursor-pointer">
+                <label class="relative inline-flex items-center mb-5 cursor-pointer">
                     <input type="checkbox" class="sr-only peer" v-model="verbose" @change="updateVerbose">
                     <div class="checkbox-switch"></div>
                     <span class="ml-3 text-sm font-medium text-gray-900">Verbose Modus</span>
