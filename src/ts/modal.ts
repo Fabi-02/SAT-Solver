@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 
-export type ModalType = "NodeInfo" | "Formula";
+export type ModalType = "NodeInfo" | "Formula" | "FormulaModel";
 
 export const modalData = reactive({
     show: false,

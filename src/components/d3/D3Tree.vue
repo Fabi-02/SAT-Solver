@@ -1,14 +1,16 @@
 <script setup lang="ts">
 
 import * as d3 from "d3"
-import { Eval, TreeNode } from "./types";
+import { Eval, Model, TreeNode } from "./types";
 import { onMounted } from "vue";
 import { HierarchyLink, HierarchyPointNode } from "d3";
 import { showModal } from "@ts/modal";
+import { CNF } from "@ts/formula";
 
 const props = defineProps({
     nodeSizeX: { type: Number, default: 60 },
-    nodeSizeY: { type: Number, default: 60 }
+    nodeSizeY: { type: Number, default: 60 },
+    formula: { type: String, required: true }
 });
 
 type TreeLayoutNode = HierarchyPointNode<TreeNode>;
@@ -239,17 +241,14 @@ function update(data: TreeNode, pathId: number, panToId: number | null = null) {
                 .on("mouseleave", mouseleave! as any);
 
             nodeEnter.on("click", (event: MouseEvent, d: TreeLayoutNode) => {
-                if (d.data.name === "") return;
-                let data: any[] = [];
+                if (d.data.name === "" || props.formula === undefined) return;
+                let model: Model = {};
                 let node: TreeLayoutNode | null = d;
                 do {
-                    // text = `${node.data.key} = ${node.data.neg ? 'False' : 'True'}\n` + text;
-                    data.unshift({
-                        key: node.data.key,
-                        neg: node.data.neg
-                    });
+                    model[node.data.key] = !node.data.neg;
                 } while((node = node.parent) !== null && node.data.name !== "");
-                showModal("NodeInfo", data);
+                let cnf = new CNF(props.formula);
+                showModal("FormulaModel", { formula: cnf, model: model });
             });
 
             return nodeEnter;

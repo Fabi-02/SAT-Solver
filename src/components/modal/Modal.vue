@@ -17,6 +17,7 @@ const props = defineProps({
                 <div class="p-5 text-xl font-semibold text-blue-600">
                     <p v-if="modalData.modalType == 'NodeInfo'">Node Info</p>
                     <p v-if="modalData.modalType == 'Formula'">KNF-Formel</p>
+                    <p v-if="modalData.modalType == 'FormulaModel'">KNF-Formel (mit Knoten Info)</p>
                 </div>
 
                 <div class="p-5 border-t border-gray-200">
@@ -30,6 +31,27 @@ const props = defineProps({
                             <span class="w-5" v-if="index !== 0">∧</span>
                             <span class="w-5" v-else></span>
                             ( {{ clause }} )
+                        </p>
+                    </div>
+                    <div v-if="modalData.modalType == 'FormulaModel'">
+                        <p v-for="(clause, index) in modalData.data.formula.clauses" class="flex" :class="{
+                            'bg-green-100': clause.evaluate(modalData.data.model) === 'sat',
+                            'bg-red-100': clause.evaluate(modalData.data.model) === 'unsat'
+                        }">
+                            <span class="w-5" v-if="index !== 0">∧</span>
+                            <span class="w-5" v-else></span>
+                            (
+                            <span v-for="(literal, index) in clause.literals" class="flex">
+                                <span v-if="index !== 0">&nbsp;∨&nbsp;</span>
+                                <span :class="{
+                                    'text-green-700': literal.identifier in modalData.data.model && (modalData.data.model[literal.identifier] ^ literal.neg),
+                                    'text-red-700': literal.identifier in modalData.data.model && !(modalData.data.model[literal.identifier] ^ literal.neg)
+                                }">
+                                    <span v-if="literal.neg">¬</span>
+                                    {{ literal.identifier }}
+                                </span>
+                            </span>
+                            )
                         </p>
                     </div>
                 </div>

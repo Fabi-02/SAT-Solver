@@ -66,7 +66,7 @@ function changeGraphMode() {
             </div>
             <div class="relative w-full">
                 <div  v-show="graphMode === 'dpll_graph'">
-                    <D3Tree ref="d3Tree" :node-size-x="100" />
+                    <D3Tree ref="d3Tree" :node-size-x="100" :formula="formulaString" />
                 </div>
                 <div  v-show="graphMode === 'interaction_graph'">
                     <D3InteractionGraph :graph="interactionGraph" ref="d3InteractionGraph"/>
