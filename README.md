@@ -8,8 +8,9 @@ Implementierte Beispielprobleme:
 * N-Damen Problem 
 * Sudoku lösen 
 * Graphenfärbung
+* Dinner Planing Problem
 
-Diese Anwendung wurde im Rahmen einer Studienarbeit entwickelt.
+Diese Anwendung wurde im Rahmen einer Studienarbeit entwickelt und später erweitert.
 
 ## Dependencies
 
