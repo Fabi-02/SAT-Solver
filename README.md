@@ -27,3 +27,7 @@ Diese Anwendung wurde im Rahmen einer Studienarbeit entwickelt und später erwei
 Um die Applikation zu bauen wird folgender Befehl verwendet: `npm run tauri build`
 
 Nun befindet sich unter dem Pfad `./src-tauri/target/release/bundle/msi` der Installer für die Applikation.
+
+## Anleitung
+
+Im GitHub Wiki befindet sich eine kleine [Anleitung](https://github.com/Fabi-02/SAT-Solver/wiki/Anleitung) der Applikation.
