@@ -13,31 +13,33 @@
 // - Georg          (G)
 // - Emma           (E)
 
+const AND = "\n";
+
 export function dinnerFormula(): string {
     let formula: string = "";
 
     // If Mr. Dupont comes, then his wife will come, too.
-    // MD -> FD => -MD | FD
-    formula += "-MD FD\n";
+    // MD -> FD ≡ ¬MD ∨ FD
+    formula += "-MD FD" + AND;
     
     // At least one of the two children Ivana and Georg will come.
-    // I | G
-    formula += "I G\n";
+    // I ∨ G
+    formula += "I G" + AND;
     
     // Either Mrs. Dupont or Emma will come.
-    // FD XOR E => (FD | E) & (-FD | -E)
-    formula += "FD E\n";
-    formula += "-FD -E\n";
+    // FD XOR E ≡ (FD ∨ E) ∧ (-FD ∨ ¬E)
+    formula += "FD E" + AND;
+    formula += "-FD -E" + AND;
     
 
     // Either Emma and Georg come both, or they both don't come.
-    // (E & G) | (-E & -G) => (E | -G) & (-E | G)
-    formula += "E -G\n";
-    formula += "-E G\n";
+    // (E ∧ G) ∨ (-E ∧ ¬G) ≡ (E ∨ ¬G) ∧ (-E ∨ G)
+    formula += "E -G" + AND;
+    formula += "-E G" + AND;
 
     // And if Ivana comes, then also Georg and  Mr. Dupont will come.
-    // I -> G & MD => -I | (G & MD) => (-I | G) & (-I | MD)
-    formula += "-I G\n";
+    // I -> G ∧ MD ≡ ¬I ∨ (G ∧ MD) ≡ (-I ∨ G) ∧ (-I ∨ MD)
+    formula += "-I G" + AND;
     formula += "-I MD";
 
     return formula;
